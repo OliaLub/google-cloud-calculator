@@ -30,7 +30,6 @@ public abstract class AbstractTest {
     page.navigate("https://cloud.google.com/products/calculator");
     page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add to estimate")).first().click();
     page.getByText("Add to this estimate").waitFor();
-
   }
 
 }

@@ -7,4 +7,5 @@ public abstract class CalculatorFactory {
   protected CalculatorFactory() {}
 
   public abstract Calculator createCalculator();
+
 }

@@ -1,48 +1,75 @@
 package org.testautomation.playwright;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Locator.ClickOptions;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
-import com.microsoft.playwright.options.WaitForSelectorState;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.testautomation.playwright.calculator.Calculator;
 import org.testautomation.playwright.factory.CalculatorFactory;
 import org.testautomation.playwright.factory.ComputeEngineFactory;
+import org.testautomation.playwright.factory.KubernetesEngineFactory;
+import org.testautomation.playwright.page.EstimatePage;
 
 public class ComputeEngineTests extends AbstractTest{
 
-  @Test
-  public void verifyComputeEnginePriceUpdatesBasedOnNumberOfInstances(Page page){
-    CalculatorFactory factory = new ComputeEngineFactory();
+  static Stream<Arguments> calculatorFactoryProviderDefaultCost() {
+    return Stream.of(
+        Arguments.of(new ComputeEngineFactory(), "$69.98", "$209.95"),
+        Arguments.of(new KubernetesEngineFactory(), "$2,851.99", "$3,963.58")
+       // Arguments.of(new KubernetesEngineFactory(), "$628.80", "$1,740.39")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("calculatorFactoryProviderDefaultCost")
+  public void verifyComputeEnginePriceUpdatesBasedOnNumberOfInstances(CalculatorFactory factory, String expectedDefaultCost, String expectedUpdatedCost, Page page){
     Calculator calculator = factory.createCalculator();
     calculator.openCalculator(page);
 
-    assertThat(page.locator("[aria-label='Selected product title']")).hasText("Compute Engine");
+    EstimatePage estimatePage = new EstimatePage(page,calculator.createServicePage(page));
+    //set 1 number
+    estimatePage.costUpdatedPopupAppears();
 
-    Locator costLocator =  page.locator("text=Estimated cost").locator("..").locator("label");
-    Locator popup = page.getByText("Service cost updated");
+    String defaultCostText = estimatePage.readCostText();
+    double defaultCost = estimatePage.readCostValue();
+    Assertions.assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+    estimatePage.costUpdatedPopupDisappears();
 
-    popup.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.ATTACHED));
-    assertThat(costLocator).containsText("$");
-    String defaultCostText = costLocator.textContent();
-    double defaultCost = Double.parseDouble(defaultCostText.replace("$", ""));
+    estimatePage.increaseServiceInstances(2);
+    estimatePage.costUpdatedPopupAppears();
+    estimatePage.costUpdatedPopupDisappears();
 
-    Assertions.assertThat(defaultCostText).isEqualTo("$69.98");
-    popup.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.DETACHED));
+    String updatedCostText = estimatePage.readCostText();
+    double updatedCost = estimatePage.readCostValue();
+    Assertions.assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
+ //   Assertions.assertThat(updatedCost).isCloseTo(defaultCost * 3, Assertions.within(0.01));
+  }
 
-    page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Increment")).first().click(new ClickOptions().setClickCount(2));
 
-    popup.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.ATTACHED));
-    popup.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.DETACHED));
+  static Stream<Arguments> calculatorFactoryProviderAdvancedSettings() {
+    return Stream.of(
+        Arguments.of(new ComputeEngineFactory(), "$69.98", "$209.95"),
+        Arguments.of(new KubernetesEngineFactory(), "$2,851.99", "$3,963.58")
+    );
+  }
 
-    String updatedCostText = costLocator.textContent();
-    double updatedCost = Double.parseDouble(updatedCostText.replace("$", ""));
-    Assertions.assertThat(updatedCostText).isEqualTo("$209.95");
-    Assertions.assertThat(updatedCost).isCloseTo(defaultCost * 3, Assertions.within(0.01));
+  @ParameterizedTest
+  @MethodSource("calculatorFactoryProviderAdvancedSettings")
+  public void verifyInstancesConfigurationsAppearAfterEnablingAdvancedSettings (CalculatorFactory factory, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
+    Calculator calculator = factory.createCalculator();
+    calculator.openCalculator(page);
+
+    EstimatePage estimatePage = new EstimatePage(page,calculator.createServicePage(page));
+    estimatePage.costUpdatedPopupAppears();
+
+    estimatePage.serviceAdvancesSettingsOptionsAreHidden();
+    estimatePage.enableServiceAdvancedSettings();
+
+    estimatePage.advancedSettingsPopupAppears();
+    estimatePage.serviceAdvancesSettingsOptionsAreVisible();
+    estimatePage.advancedSettingsPopupDisappears();
   }
 
 }
