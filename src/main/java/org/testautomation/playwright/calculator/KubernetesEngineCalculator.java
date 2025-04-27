@@ -3,8 +3,8 @@ package org.testautomation.playwright.calculator;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import java.util.regex.Pattern;
-import org.testautomation.playwright.page.KubernetesEngineServicePage;
-import org.testautomation.playwright.page.ServicePage;
+import org.testautomation.playwright.page.KubernetesEngineServiceConfigurationComponent;
+import org.testautomation.playwright.page.ServiceConfigurationComponent;
 
 public class KubernetesEngineCalculator implements Calculator{
 
@@ -17,8 +17,8 @@ public class KubernetesEngineCalculator implements Calculator{
   }
 
   @Override
-  public ServicePage createServicePage(Page page) {
-    return new KubernetesEngineServicePage(page);
+  public ServiceConfigurationComponent createServicePage(Page page) {
+    return new KubernetesEngineServiceConfigurationComponent(page);
   }
 
 }

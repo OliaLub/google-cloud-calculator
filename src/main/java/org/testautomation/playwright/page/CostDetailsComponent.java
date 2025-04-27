@@ -5,11 +5,11 @@ import com.microsoft.playwright.Page;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class CostDetails {
+public class CostDetailsComponent {
 
   private final Locator costLocator;
 
-  public CostDetails(Page page) {
+  public CostDetailsComponent(Page page) {
     this.costLocator = page.locator("text=Estimated cost").locator("..").locator("label");
   }
 

@@ -3,7 +3,7 @@ package org.testautomation.playwright.calculator;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import java.util.regex.Pattern;
-import org.testautomation.playwright.page.ServicePage;
+import org.testautomation.playwright.page.ServiceConfigurationComponent;
 
 public class BigQueryCalculator implements Calculator{
 
@@ -16,7 +16,7 @@ public class BigQueryCalculator implements Calculator{
   }
 
   @Override
-  public ServicePage createServicePage(Page page) {
+  public ServiceConfigurationComponent createServicePage(Page page) {
     return null;
   }
 

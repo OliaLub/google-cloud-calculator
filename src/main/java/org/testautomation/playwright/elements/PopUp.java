@@ -2,7 +2,6 @@ package org.testautomation.playwright.elements;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.WaitForSelectorState;
 
 public abstract class PopUp {
 
@@ -12,12 +11,8 @@ public abstract class PopUp {
     this.popUp = page.getByText(popUpText);
   }
 
-  public void waitUntilAppears() {
-    popUp.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.ATTACHED));
-  }
-
-  public void waitUntilDisappears() {
-    popUp.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.DETACHED));
+  public Locator getPopUp() {
+    return this.popUp;
   }
 
 }

@@ -10,7 +10,7 @@ import org.testautomation.playwright.calculator.Calculator;
 import org.testautomation.playwright.factory.CalculatorFactory;
 import org.testautomation.playwright.factory.ComputeEngineFactory;
 import org.testautomation.playwright.factory.KubernetesEngineFactory;
-import org.testautomation.playwright.page.EstimatePage;
+import org.testautomation.playwright.page.CalculatorPage;
 
 public class ComputeEngineTests extends AbstractTest{
 
@@ -28,21 +28,21 @@ public class ComputeEngineTests extends AbstractTest{
     Calculator calculator = factory.createCalculator();
     calculator.openCalculator(page);
 
-    EstimatePage estimatePage = new EstimatePage(page,calculator.createServicePage(page));
+    CalculatorPage calculatorPage = new CalculatorPage(page,calculator.createServicePage(page));
     //set 1 number
-    estimatePage.costUpdatedPopupAppears();
+    calculatorPage.verifyCostUpdatedPopupAppears();
 
-    String defaultCostText = estimatePage.readCostText();
-    double defaultCost = estimatePage.readCostValue();
+    String defaultCostText = calculatorPage.readCostText();
+    double defaultCost = calculatorPage.readCostValue();
     Assertions.assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
-    estimatePage.costUpdatedPopupDisappears();
+    calculatorPage.verifyCostUpdatedPopupDisappears();
 
-    estimatePage.increaseServiceInstances(2);
-    estimatePage.costUpdatedPopupAppears();
-    estimatePage.costUpdatedPopupDisappears();
+    calculatorPage.increaseServiceInstances(2);
+    calculatorPage.verifyCostUpdatedPopupAppears();
+    calculatorPage.verifyCostUpdatedPopupDisappears();
 
-    String updatedCostText = estimatePage.readCostText();
-    double updatedCost = estimatePage.readCostValue();
+    String updatedCostText = calculatorPage.readCostText();
+    double updatedCost = calculatorPage.readCostValue();
     Assertions.assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
  //   Assertions.assertThat(updatedCost).isCloseTo(defaultCost * 3, Assertions.within(0.01));
   }
@@ -61,15 +61,50 @@ public class ComputeEngineTests extends AbstractTest{
     Calculator calculator = factory.createCalculator();
     calculator.openCalculator(page);
 
-    EstimatePage estimatePage = new EstimatePage(page,calculator.createServicePage(page));
-    estimatePage.costUpdatedPopupAppears();
+    CalculatorPage calculatorPage = new CalculatorPage(page,calculator.createServicePage(page));
+    calculatorPage.verifyCostUpdatedPopupAppears();
 
-    estimatePage.serviceAdvancesSettingsOptionsAreHidden();
-    estimatePage.enableServiceAdvancedSettings();
+    calculatorPage.verifyServiceAdvancesSettingsOptionsAreHidden();
+    calculatorPage.enableServiceAdvancedSettings();
 
-    estimatePage.advancedSettingsPopupAppears();
-    estimatePage.serviceAdvancesSettingsOptionsAreVisible();
-    estimatePage.advancedSettingsPopupDisappears();
+    calculatorPage.verifyAdvancedSettingsPopupAppears();
+    calculatorPage.verifyServiceAdvancesSettingsOptionsAreVisible();
+    calculatorPage.verifyAdvancedSettingsPopupDisappears();
+  }
+
+  static Stream<Arguments> calculatorFactoryProviderMachineType() {
+    return Stream.of(
+        Arguments.of(new ComputeEngineFactory(), "n4-standard-2", "vCPUs: 2, RAM: 8 GiB","$69.98", "$30,742.51"),
+        Arguments.of(new KubernetesEngineFactory(), "n1-standard-16", "vCPUs: 16, RAM: 60 GiB", "$2,851.99", "$153,786.57")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("calculatorFactoryProviderMachineType")
+  public void verifyMachineTypeAndPriceUpdatedAccordingToSelection (CalculatorFactory factory, String defaultMachineType, String defaultMachineFeatures, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
+    Calculator calculator = factory.createCalculator();
+    calculator.openCalculator(page);
+
+    CalculatorPage calculatorPage = new CalculatorPage(page, calculator.createServicePage(page));
+    calculatorPage.verifyCostUpdatedPopupAppears();
+
+    String defaultCostText = calculatorPage.readCostText();
+    Assertions.assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+    calculatorPage.verifyCostUpdatedPopupAppears();
+
+    String defaultMachineTypeSummaryBlock = calculatorPage.readMachineTypeSummaryBlockText();
+    Assertions.assertThat(defaultMachineTypeSummaryBlock).contains(defaultMachineType, defaultMachineFeatures);
+
+    calculatorPage.selectMachineFamily(page, "Memory-optimized"); //ENUM
+    calculatorPage.selectMachineSeries(page, "M2");
+    calculatorPage.selectMachineType(page, "m2-ultramem-208");
+    calculatorPage.verifyCostUpdatedPopupAppears();
+
+    String updatedCostText = calculatorPage.readCostText();
+    Assertions.assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
+
+    String updatedMachineTypeSummaryBlock = calculatorPage.readMachineTypeSummaryBlockText();
+    Assertions.assertThat(updatedMachineTypeSummaryBlock).contains("m2-ultramem-208", "vCPUs: 208, RAM: 5888 GiB");
   }
 
 }
