@@ -2,17 +2,21 @@ package org.testautomation.playwright.page;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import org.testautomation.playwright.enums.MachineFamily;
 import org.testautomation.playwright.elements.AdvancedSettingsPopUp;
+import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.utils.WaiterUtility;
 
 public class CalculatorPage {
 
+  private final Page page;
   private final AdvancedSettingsPopUp advancedSettingsPopUp;
   private final ServiceConfigurationComponent servicePage;
   private final CostDetailsComponent costDetails;
   private final Locator costUpdatedElement;
 
   public CalculatorPage(Page page, ServiceConfigurationComponent servicePage) {
+    this.page = page;
     this.servicePage = servicePage;
     this.costDetails = new CostDetailsComponent(page);
     this.costUpdatedElement = page.getByText("Service cost updated");
@@ -59,20 +63,30 @@ public class CalculatorPage {
     servicePage.advancesSettingsOptionsAreHidden();
   }
 
-  public void selectMachineFamily(Page page, String machineFamilyName) {
-    servicePage.selectMachineFamily(page, machineFamilyName);
+  public void selectMachineFamily(MachineFamily machineFamilyName) {
+    String summary = readMachineTypeSummaryBlockText();
+    servicePage.selectMachineFamily(machineFamilyName);
+    WaiterUtility.waitForTextToChange(page, servicePage.getMachineTypeComponent().getMachineTypeSummaryBlock(), summary);
   }
 
-  public void selectMachineSeries(Page page, String seriesName) {
-    servicePage.selectMachineSeries(page, seriesName);
+  public void selectMachineSeries(String seriesName) {
+    servicePage.selectMachineSeries(seriesName);
   }
 
-  public void selectMachineType(Page page, String machineTypeName) {
-    servicePage.selectMachineType(page, machineTypeName);
+  public void selectMachineType(String machineTypeName) {
+    servicePage.selectMachineType(machineTypeName);
   }
 
   public String readMachineTypeSummaryBlockText() {
     return servicePage.readMachineTypeSummaryBlockText();
+  }
+
+  public String readSelectedRegion() {
+    return servicePage.readSelectedRegion();
+  }
+
+  public void selectRegion(Region region) {
+    servicePage.selectRegion(region);
   }
 
 }

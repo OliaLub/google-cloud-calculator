@@ -7,6 +7,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testautomation.playwright.calculator.Calculator;
+import org.testautomation.playwright.enums.MachineFamily;
+import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.factory.CalculatorFactory;
 import org.testautomation.playwright.factory.ComputeEngineFactory;
 import org.testautomation.playwright.factory.KubernetesEngineFactory;
@@ -95,9 +97,9 @@ public class ComputeEngineTests extends AbstractTest{
     String defaultMachineTypeSummaryBlock = calculatorPage.readMachineTypeSummaryBlockText();
     Assertions.assertThat(defaultMachineTypeSummaryBlock).contains(defaultMachineType, defaultMachineFeatures);
 
-    calculatorPage.selectMachineFamily(page, "Memory-optimized"); //ENUM
-    calculatorPage.selectMachineSeries(page, "M2");
-    calculatorPage.selectMachineType(page, "m2-ultramem-208");
+    calculatorPage.selectMachineFamily(MachineFamily.MEMORY_OPTIMIZED); //ENUM
+    calculatorPage.selectMachineSeries("M2");
+    calculatorPage.selectMachineType("m2-ultramem-208");
     calculatorPage.verifyCostUpdatedPopupAppears();
 
     String updatedCostText = calculatorPage.readCostText();
@@ -105,6 +107,39 @@ public class ComputeEngineTests extends AbstractTest{
 
     String updatedMachineTypeSummaryBlock = calculatorPage.readMachineTypeSummaryBlockText();
     Assertions.assertThat(updatedMachineTypeSummaryBlock).contains("m2-ultramem-208", "vCPUs: 208, RAM: 5888 GiB");
+  }
+
+  static Stream<Arguments> calculatorFactoryProviderSelectedRegion() {
+    return Stream.of(
+        Arguments.of(new ComputeEngineFactory(), Region.IOWA.getRegionName(), Region.LONDON.getRegionName(), "$69.98", "$79.78"),
+        Arguments.of(new KubernetesEngineFactory(), Region.IOWA.getRegionName(), Region.LONDON.getRegionName(), "$2,851.99", "$3,652.93")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("calculatorFactoryProviderSelectedRegion")
+  public void verifyPriceUpdatedBasedOnSelectedRegion (CalculatorFactory factory, String expectedDefaultRegion, String expectedSelectedRegion, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
+    Calculator calculator = factory.createCalculator();
+    calculator.openCalculator(page);
+
+    CalculatorPage calculatorPage = new CalculatorPage(page, calculator.createServicePage(page));
+    calculatorPage.verifyCostUpdatedPopupAppears();
+
+    String defaultCostText = calculatorPage.readCostText();
+    Assertions.assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+
+    String defaultRegion = calculatorPage.readSelectedRegion();
+    Assertions.assertThat(defaultRegion).isEqualTo(expectedDefaultRegion);
+    calculatorPage.verifyCostUpdatedPopupDisappears();
+
+    calculatorPage.selectRegion(Region.LONDON);
+    calculatorPage.verifyCostUpdatedPopupAppears();
+
+    String selectedRegion = calculatorPage.readSelectedRegion();
+    Assertions.assertThat(selectedRegion).isEqualTo(expectedSelectedRegion);
+
+    String updatedCostText = calculatorPage.readCostText();
+    Assertions.assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
   }
 
 }
