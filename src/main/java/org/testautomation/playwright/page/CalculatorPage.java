@@ -2,21 +2,19 @@ package org.testautomation.playwright.page;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-import org.testautomation.playwright.enums.MachineFamily;
 import org.testautomation.playwright.elements.AdvancedSettingsPopUp;
+import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.utils.WaiterUtility;
 
 public class CalculatorPage {
 
-  private final Page page;
   private final AdvancedSettingsPopUp advancedSettingsPopUp;
   private final ServiceConfigurationComponent servicePage;
   private final CostDetailsComponent costDetails;
   private final Locator costUpdatedElement;
 
   public CalculatorPage(Page page, ServiceConfigurationComponent servicePage) {
-    this.page = page;
     this.servicePage = servicePage;
     this.costDetails = new CostDetailsComponent(page);
     this.costUpdatedElement = page.getByText("Service cost updated");
@@ -63,18 +61,8 @@ public class CalculatorPage {
     servicePage.advancesSettingsOptionsAreHidden();
   }
 
-  public void selectMachineFamily(MachineFamily machineFamilyName) {
-    String summary = readMachineTypeSummaryBlockText();
-    servicePage.selectMachineFamily(machineFamilyName);
-    WaiterUtility.waitForTextToChange(page, servicePage.getMachineTypeComponent().getMachineTypeSummaryBlock(), summary);
-  }
-
-  public void selectMachineSeries(String seriesName) {
-    servicePage.selectMachineSeries(seriesName);
-  }
-
-  public void selectMachineType(String machineTypeName) {
-    servicePage.selectMachineType(machineTypeName);
+  public void selectMachineConfiguration(MachineType machineType) {
+    servicePage.selectMachineConfiguration(machineType);
   }
 
   public String readMachineTypeSummaryBlockText() {

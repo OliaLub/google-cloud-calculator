@@ -6,8 +6,8 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import java.util.List;
 import lombok.Getter;
-import org.testautomation.playwright.enums.MachineFamily;
 import org.testautomation.playwright.elements.Combobox;
+import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.Region;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -50,16 +50,8 @@ public abstract class ServiceConfigurationComponent {
     getAdvancedSettingsOptions().forEach(locator -> assertThat(locator).isHidden());
   }
 
-  public void selectMachineFamily(MachineFamily machineFamilyName) {
-    machineTypeComponent.selectMachineFamily(machineFamilyName);
-  }
-
-  public void selectMachineSeries(String seriesName) {
-    machineTypeComponent.selectSeries(seriesName);
-  }
-
-  public void selectMachineType(String machineTypeName) {
-    machineTypeComponent.selectMachineType(machineTypeName);
+  public void selectMachineConfiguration(MachineType machineType) {
+    machineTypeComponent.selectMachineConfiguration(machineType);
   }
 
   public String readMachineTypeSummaryBlockText() {

@@ -1,13 +1,14 @@
 package org.testautomation.playwright;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.microsoft.playwright.Page;
 import java.util.stream.Stream;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testautomation.playwright.calculator.Calculator;
-import org.testautomation.playwright.enums.MachineFamily;
+import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.factory.CalculatorFactory;
 import org.testautomation.playwright.factory.ComputeEngineFactory;
@@ -36,7 +37,7 @@ public class ComputeEngineTests extends AbstractTest{
 
     String defaultCostText = calculatorPage.readCostText();
     double defaultCost = calculatorPage.readCostValue();
-    Assertions.assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+    assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
     calculatorPage.verifyCostUpdatedPopupDisappears();
 
     calculatorPage.increaseServiceInstances(2);
@@ -45,7 +46,7 @@ public class ComputeEngineTests extends AbstractTest{
 
     String updatedCostText = calculatorPage.readCostText();
     double updatedCost = calculatorPage.readCostValue();
-    Assertions.assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
+    assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
  //   Assertions.assertThat(updatedCost).isCloseTo(defaultCost * 3, Assertions.within(0.01));
   }
 
@@ -76,14 +77,14 @@ public class ComputeEngineTests extends AbstractTest{
 
   static Stream<Arguments> calculatorFactoryProviderMachineType() {
     return Stream.of(
-        Arguments.of(new ComputeEngineFactory(), "n4-standard-2", "vCPUs: 2, RAM: 8 GiB","$69.98", "$30,742.51"),
-        Arguments.of(new KubernetesEngineFactory(), "n1-standard-16", "vCPUs: 16, RAM: 60 GiB", "$2,851.99", "$153,786.57")
+        Arguments.of(new ComputeEngineFactory(), MachineType.M2_ULTRAMEM_208, "n4-standard-2", "vCPUs: 2, RAM: 8 GiB", "vCPUs: 208, RAM: 5888 GiB", "$69.98", "$30,742.51"),
+        Arguments.of(new KubernetesEngineFactory(), MachineType.M2_ULTRAMEM_208, "n1-standard-16", "vCPUs: 16, RAM: 60 GiB", "vCPUs: 208, RAM: 5888 GiB", "$2,851.99", "$153,786.57")
     );
   }
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderMachineType")
-  public void verifyMachineTypeAndPriceUpdatedAccordingToSelection (CalculatorFactory factory, String defaultMachineType, String defaultMachineFeatures, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
+  public void verifyMachineTypeAndPriceUpdatedAccordingToSelection (CalculatorFactory factory, MachineType selectedType, String defaultMachineType, String defaultMachineFeatures, String selectedMachineFeatures, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
     Calculator calculator = factory.createCalculator();
     calculator.openCalculator(page);
 
@@ -91,22 +92,20 @@ public class ComputeEngineTests extends AbstractTest{
     calculatorPage.verifyCostUpdatedPopupAppears();
 
     String defaultCostText = calculatorPage.readCostText();
-    Assertions.assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+    assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
     calculatorPage.verifyCostUpdatedPopupAppears();
 
     String defaultMachineTypeSummaryBlock = calculatorPage.readMachineTypeSummaryBlockText();
-    Assertions.assertThat(defaultMachineTypeSummaryBlock).contains(defaultMachineType, defaultMachineFeatures);
+    assertThat(defaultMachineTypeSummaryBlock).contains(defaultMachineType, defaultMachineFeatures);
 
-    calculatorPage.selectMachineFamily(MachineFamily.MEMORY_OPTIMIZED); //ENUM
-    calculatorPage.selectMachineSeries("M2");
-    calculatorPage.selectMachineType("m2-ultramem-208");
+    calculatorPage.selectMachineConfiguration(selectedType);
     calculatorPage.verifyCostUpdatedPopupAppears();
 
     String updatedCostText = calculatorPage.readCostText();
-    Assertions.assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
+    assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
 
     String updatedMachineTypeSummaryBlock = calculatorPage.readMachineTypeSummaryBlockText();
-    Assertions.assertThat(updatedMachineTypeSummaryBlock).contains("m2-ultramem-208", "vCPUs: 208, RAM: 5888 GiB");
+    assertThat(updatedMachineTypeSummaryBlock).contains(selectedType.getTypeName(), selectedMachineFeatures);
   }
 
   static Stream<Arguments> calculatorFactoryProviderSelectedRegion() {
@@ -126,17 +125,17 @@ public class ComputeEngineTests extends AbstractTest{
     calculatorPage.verifyCostUpdatedPopupAppears();
 
     String defaultCostText = calculatorPage.readCostText();
-    Assertions.assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+    assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
 
     String defaultRegion = calculatorPage.readSelectedRegion();
-    Assertions.assertThat(defaultRegion).isEqualTo(expectedDefaultRegion);
+    assertThat(defaultRegion).isEqualTo(expectedDefaultRegion);
     calculatorPage.verifyCostUpdatedPopupDisappears();
 
     calculatorPage.selectRegion(Region.LONDON);
     calculatorPage.verifyCostUpdatedPopupAppears();
 
     String selectedRegion = calculatorPage.readSelectedRegion();
-    Assertions.assertThat(selectedRegion).isEqualTo(expectedSelectedRegion);
+    assertThat(selectedRegion).isEqualTo(expectedSelectedRegion);
 
     String updatedCostText = calculatorPage.readCostText();
     Assertions.assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
