@@ -3,6 +3,7 @@ package org.testautomation.playwright.page;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import org.testautomation.playwright.elements.AdvancedSettingsPopUp;
+import org.testautomation.playwright.enums.CommittedUse;
 import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.utils.WaiterUtility;
@@ -75,6 +76,14 @@ public class CalculatorPage {
 
   public void selectRegion(Region region) {
     servicePage.selectRegion(region);
+  }
+
+  public void selectCommittedUseOption(CommittedUse term) {
+    servicePage.selectCommittedUseOption(term);
+  }
+
+  public String readSelectedCommittedUseOption() {
+    return servicePage.readSelectedCommittedUseOption();
   }
 
 }

@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testautomation.playwright.calculator.Calculator;
+import org.testautomation.playwright.enums.CommittedUse;
 import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.factory.CalculatorFactory;
@@ -138,7 +139,40 @@ public class ComputeEngineTests extends AbstractTest{
     assertThat(selectedRegion).isEqualTo(expectedSelectedRegion);
 
     String updatedCostText = calculatorPage.readCostText();
-    Assertions.assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
+    assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
+  }
+
+  static Stream<Arguments> calculatorFactoryProviderCommittedUse() {
+    return Stream.of(
+        Arguments.of(new ComputeEngineFactory(), CommittedUse.NONE, CommittedUse.THREE_YEARS, "$69.98", "$31.93"),
+        Arguments.of(new KubernetesEngineFactory(), CommittedUse.NONE, CommittedUse.THREE_YEARS, "$2,851.99", "$1,326.37")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("calculatorFactoryProviderCommittedUse")
+  public void verifyPriceUpdatedBasedOnCommittedUseDiscountOptions (CalculatorFactory factory, CommittedUse defaultTerm, CommittedUse selectedTerm, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
+    Calculator calculator = factory.createCalculator();
+    calculator.openCalculator(page);
+
+    CalculatorPage calculatorPage = new CalculatorPage(page, calculator.createServicePage(page));
+    calculatorPage.verifyCostUpdatedPopupAppears();
+
+    String defaultCostText = calculatorPage.readCostText();
+    assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+
+    String defaultCommittedUseOption = calculatorPage.readSelectedCommittedUseOption();
+    assertThat(defaultCommittedUseOption).isEqualTo(defaultTerm.getValue());
+    calculatorPage.verifyCostUpdatedPopupDisappears();
+
+    calculatorPage.selectCommittedUseOption(selectedTerm);
+    calculatorPage.verifyCostUpdatedPopupAppears();
+
+    String selectedCommittedUseOption = calculatorPage.readSelectedCommittedUseOption();
+    assertThat(selectedCommittedUseOption).isEqualTo(selectedTerm.getValue());
+
+    String updatedCostText = calculatorPage.readCostText();
+    assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
   }
 
 }

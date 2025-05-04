@@ -7,6 +7,7 @@ import com.microsoft.playwright.options.AriaRole;
 import java.util.List;
 import lombok.Getter;
 import org.testautomation.playwright.elements.Combobox;
+import org.testautomation.playwright.enums.CommittedUse;
 import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.Region;
 
@@ -19,7 +20,8 @@ public abstract class ServiceConfigurationComponent {
   protected final Locator increaseInstancesButton;
   protected final Combobox regionCombobox;
   protected final Locator regionComboboxValue;
-  protected MachineTypeComponent machineTypeComponent;
+  protected final MachineTypeComponent machineTypeComponent;
+  protected final CommittedUseComponent committedUseComponent;
 
   public ServiceConfigurationComponent(Page page) {
     this.advancedSettingsButton = page.getByRole(AriaRole.SWITCH, new Page.GetByRoleOptions().setName("Advanced settings"));
@@ -27,6 +29,7 @@ public abstract class ServiceConfigurationComponent {
     this.regionCombobox = new Combobox(page,"Region");
     this.regionComboboxValue = regionCombobox.getCombobox().locator("span").filter(new FilterOptions().setHasText("(")).first();
     this.machineTypeComponent = new MachineTypeComponent(page);
+    this.committedUseComponent = new CommittedUseComponent(page);
   }
 
   public void enableAdvancedSettings() {
