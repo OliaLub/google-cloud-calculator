@@ -70,4 +70,12 @@ public abstract class ServiceConfigurationComponent {
     assertThat(regionComboboxValue).containsText(region.getRegionName());
   }
 
+  public void selectCommittedUseOption(CommittedUse term) {
+    committedUseComponent.selectOption(term);
+  }
+
+  public String readSelectedCommittedUseOption() {
+    return committedUseComponent.getSelectedOption();
+  }
+
 }

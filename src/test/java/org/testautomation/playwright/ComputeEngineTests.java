@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testautomation.playwright.calculator.Calculator;
 import org.testautomation.playwright.enums.CommittedUse;
+import org.testautomation.playwright.enums.Currency;
 import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.factory.CalculatorFactory;
@@ -170,6 +171,35 @@ public class ComputeEngineTests extends AbstractTest{
 
     String selectedCommittedUseOption = calculatorPage.readSelectedCommittedUseOption();
     assertThat(selectedCommittedUseOption).isEqualTo(selectedTerm.getValue());
+
+    String updatedCostText = calculatorPage.readCostText();
+    assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
+  }
+
+  static Stream<Arguments> calculatorFactoryProviderCurrency() {
+    return Stream.of(
+        Arguments.of(new ComputeEngineFactory(), Currency.EUR, "$69.98", "€61.58"),
+        Arguments.of(new KubernetesEngineFactory(), Currency.EUR, "$2,851.99", "€2,509.46")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("calculatorFactoryProviderCurrency")
+  public void verifyPriceUpdatedBasedOnSelectedCurrency (CalculatorFactory factory, Currency selectedCurrency, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
+    Calculator calculator = factory.createCalculator();
+    calculator.openCalculator(page);
+
+    CalculatorPage calculatorPage = new CalculatorPage(page, calculator.createServicePage(page));
+    calculatorPage.verifyCostUpdatedPopupAppears();
+
+    assertThat(calculatorPage.readSelectedCurrency()).isEqualTo(Currency.USD);
+
+    String defaultCostText = calculatorPage.readCostText();
+    assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+
+    calculatorPage.selectCurrency(selectedCurrency);
+    assertThat(calculatorPage.readSelectedCurrency()).isEqualTo(selectedCurrency);
+    calculatorPage.verifyCostUpdatedPopupAppears();
 
     String updatedCostText = calculatorPage.readCostText();
     assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);

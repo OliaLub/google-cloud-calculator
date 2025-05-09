@@ -4,6 +4,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import org.testautomation.playwright.elements.AdvancedSettingsPopUp;
 import org.testautomation.playwright.enums.CommittedUse;
+import org.testautomation.playwright.enums.Currency;
 import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.utils.WaiterUtility;
@@ -85,5 +86,14 @@ public class CalculatorPage {
   public String readSelectedCommittedUseOption() {
     return servicePage.readSelectedCommittedUseOption();
   }
+
+  public void selectCurrency(Currency currency) {
+    costDetails.selectCurrency(currency);
+  }
+
+  public Currency readSelectedCurrency() {
+    return costDetails.getSelectedCurrency();
+  }
+
 
 }
