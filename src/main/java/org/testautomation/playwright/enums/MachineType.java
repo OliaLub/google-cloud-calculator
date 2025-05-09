@@ -4,9 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum MachineType {
-  C2_STANDARD_4("c2-standard-4", MachineSeries.C2),
-  C2_STANDARD_8("c2-standard-8", MachineSeries.C2),
-  C2_STANDARD_16("c2-standard-16", MachineSeries.C2),
+  N2_STANDARD_4("n2-standard-4", MachineSeries.N2),
+  N4_STANDARD_8("n4-standard-8", MachineSeries.N4),
+  C2D_STANDARD_16("c2d-standard-16", MachineSeries.C2D),
+  C2D_STANDARD_32("c2d-standard-32", MachineSeries.C2D),
   M1_ULTRAMEM_40("m1-ultramem-40", MachineSeries.M1),
   M1_ULTRAMEM_80("m1-ultramem-80", MachineSeries.M1),
   M1_ULTRAMEM_160("m1-ultramem-160", MachineSeries.M1),

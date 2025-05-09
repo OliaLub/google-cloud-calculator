@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum MachineSeries {
   N1("N1", MachineFamily.GENERAL_PURPOSE),
-  N2("N1", MachineFamily.GENERAL_PURPOSE),
+  N2("N2", MachineFamily.GENERAL_PURPOSE),
+  N4("N4", MachineFamily.GENERAL_PURPOSE),
   C2("C2", MachineFamily.COMPUTE_OPTIMIZED),
   C2D("C2D", MachineFamily.COMPUTE_OPTIMIZED),
   M1("M1", MachineFamily.MEMORY_OPTIMIZED),
