@@ -14,7 +14,7 @@ import org.testautomation.playwright.enums.Region;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 @Getter
-public abstract class ServiceConfigurationComponent {
+public class ServiceConfigurationComponent {
 
   protected final Locator advancedSettingsButton;
   protected final Locator increaseInstancesButton;
@@ -53,8 +53,9 @@ public abstract class ServiceConfigurationComponent {
     getAdvancedSettingsOptions().forEach(locator -> assertThat(locator).isHidden());
   }
 
-  public void selectMachineConfiguration(MachineType machineType) {
+  public ServiceConfigurationComponent selectMachineConfiguration(MachineType machineType) {
     machineTypeComponent.selectMachineConfiguration(machineType);
+    return this;
   }
 
   public String readMachineTypeSummaryBlockText() {
@@ -65,13 +66,15 @@ public abstract class ServiceConfigurationComponent {
     return regionComboboxValue.innerText();
   }
 
-  public void selectRegion(Region region) {
+  public ServiceConfigurationComponent selectRegion(Region region) {
     regionCombobox.selectOption(region.getRegionName());
     assertThat(regionComboboxValue).containsText(region.getRegionName());
+    return this;
   }
 
-  public void selectCommittedUseOption(CommittedUse term) {
+  public ServiceConfigurationComponent selectCommittedUseOption(CommittedUse term) {
     committedUseComponent.selectOption(term);
+    return this;
   }
 
   public String readSelectedCommittedUseOption() {
