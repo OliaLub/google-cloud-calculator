@@ -12,23 +12,37 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class CostDetailsComponent {
 
-  private final Locator costLocator;
   private final Locator currencyButton;
   private final Locator currencyList;
+  private final Locator addToEstimateButton;
+  private final Locator activeServiceElement;
+  private final Locator costLocator;
 
   public CostDetailsComponent(Page page) {
-    this.costLocator = page.locator("text=Estimated cost").locator("..").locator("label");
     this.currencyButton = page.getByRole(AriaRole.BUTTON, new GetByRoleOptions().setName("Open currency selector"));
     this.currencyList = page.getByRole(AriaRole.GROUP);
+    this.addToEstimateButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add to estimate")).last();
+    this.activeServiceElement = page.locator("div[aria-label^='Edit '][class*=' ']");
+    this.costLocator = page.locator("text=Estimated cost").locator("..").locator("label");
   }
 
-  public String getCostText() {
+  public AddToEstimateModal openAddToEstimateModal(Page page){
+    addToEstimateButton.click();
+    return new AddToEstimateModal(page);
+  }
+
+  public String readTotalCost() {
     assertThat(costLocator).not().containsText("--");
     return costLocator.textContent();
   }
 
-  public double getCostValue() {
-    return Double.parseDouble(getCostText().replace("$", "").replace(",", ""));
+  public String readActiveServiceCost() {
+    assertThat(costLocator).not().containsText("--");
+    return activeServiceElement.locator("div", new Locator.LocatorOptions().setHasText(".")).first().textContent();
+  }
+
+  public double readCostValue() {
+    return Double.parseDouble(readTotalCost().replace("$", "").replace(",", ""));
   }
 
   public void selectCurrency(Currency currency) {
@@ -37,7 +51,7 @@ public class CostDetailsComponent {
     Assertions.assertThat(currencyButton.innerText()).contains(currency.toString());
   }
 
-  public Currency getSelectedCurrency(){
+  public Currency readSelectedCurrency(){
     String selectedText = currencyButton.allInnerTexts().get(0).split("\\s+")[0];
     return Arrays.stream(Currency.values())
         .filter(currency -> currency.toString().equals(selectedText))

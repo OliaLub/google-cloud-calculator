@@ -1,34 +1,36 @@
 package org.testautomation.playwright.page;
 
-import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import java.util.HashMap;
+import java.util.Map;
+import lombok.Getter;
 import org.testautomation.playwright.elements.AdvancedSettingsPopUp;
-import org.testautomation.playwright.enums.CommittedUse;
-import org.testautomation.playwright.enums.Currency;
-import org.testautomation.playwright.enums.MachineType;
-import org.testautomation.playwright.enums.Region;
+import org.testautomation.playwright.enums.Product;
 import org.testautomation.playwright.utils.WaiterUtility;
 
+@Getter
 public class CalculatorPage {
 
+  private final Page page;
   private final AdvancedSettingsPopUp advancedSettingsPopUp;
-  private final ServiceConfigurationComponent servicePage;
+  private final TitleComponent titleComponent;
+  private ServiceConfigurationComponent activeService;
+  private final Map <String, ServiceConfigurationComponent> serviceConfigurationMap;
   private final CostDetailsComponent costDetails;
-  private final Locator costUpdatedElement;
 
-  public CalculatorPage(Page page, ServiceConfigurationComponent servicePage) {
-    this.servicePage = servicePage;
+  public CalculatorPage(Page page) {
+    this.page = page;
+    this.titleComponent = new TitleComponent(page);
+    this.serviceConfigurationMap = new HashMap<>();
     this.costDetails = new CostDetailsComponent(page);
-    this.costUpdatedElement = page.getByText("Service cost updated");
     this.advancedSettingsPopUp = new AdvancedSettingsPopUp(page);
   }
 
-  public void verifyCostUpdatedPopupAppears() {
-    WaiterUtility.waitUntilAppears(costUpdatedElement);
-  }
-
-  public void verifyCostUpdatedPopupDisappears() {
-    WaiterUtility.waitUntilDisappears(costUpdatedElement);
+  public void addToEstimate(Product product){
+    ServiceConfigurationComponent serviceConfiguration = costDetails.openAddToEstimateModal(page).selectProduct(product, page);
+    page.waitForCondition(() -> titleComponent.getActiveService().textContent().equals(product.getProductName()));
+    serviceConfigurationMap.put(product.getProductName(), serviceConfiguration);
+    activeService = serviceConfiguration;
   }
 
   public void verifyAdvancedSettingsPopupAppears() {
@@ -38,62 +40,5 @@ public class CalculatorPage {
   public void verifyAdvancedSettingsPopupDisappears() {
     WaiterUtility.waitUntilDisappears(advancedSettingsPopUp);
   }
-
-  public String readCostText() {
-    return costDetails.getCostText();
-  }
-
-  public double readCostValue() {
-    return costDetails.getCostValue();
-  }
-
-  public void increaseServiceInstances(int times) {
-    servicePage.increaseInstances(times);
-  }
-
-  public void enableServiceAdvancedSettings() {
-    servicePage.enableAdvancedSettings();
-  }
-
-  public void verifyServiceAdvancesSettingsOptionsAreVisible() {
-    servicePage.advancesSettingsOptionsAreVisible();
-  }
-
-  public void verifyServiceAdvancesSettingsOptionsAreHidden() {
-    servicePage.advancesSettingsOptionsAreHidden();
-  }
-
-  public void selectMachineConfiguration(MachineType machineType) {
-    servicePage.selectMachineConfiguration(machineType);
-  }
-
-  public String readMachineTypeSummaryBlockText() {
-    return servicePage.readMachineTypeSummaryBlockText();
-  }
-
-  public String readSelectedRegion() {
-    return servicePage.readSelectedRegion();
-  }
-
-  public void selectRegion(Region region) {
-    servicePage.selectRegion(region);
-  }
-
-  public void selectCommittedUseOption(CommittedUse term) {
-    servicePage.selectCommittedUseOption(term);
-  }
-
-  public String readSelectedCommittedUseOption() {
-    return servicePage.readSelectedCommittedUseOption();
-  }
-
-  public void selectCurrency(Currency currency) {
-    costDetails.selectCurrency(currency);
-  }
-
-  public Currency readSelectedCurrency() {
-    return costDetails.getSelectedCurrency();
-  }
-
 
 }
