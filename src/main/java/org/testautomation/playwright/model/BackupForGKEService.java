@@ -23,8 +23,8 @@ public class BackupForGKEService implements Service {
   }
 
   @Override
-  public void applyConfiguration(ServiceConfigurationComponent component) {
-    // to do
+  public void applyConfiguration(ServiceConfigurationComponent configuration) {
+    configuration.selectRegion(region);
   }
 
   public static class BackupForGKEServiceBuilder implements ServiceConfigurationBuilder<BackupForGKEService> {

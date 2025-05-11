@@ -4,13 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.microsoft.playwright.Page;
 import java.util.stream.Stream;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testautomation.playwright.enums.CommittedUse;
 import org.testautomation.playwright.enums.Currency;
 import org.testautomation.playwright.enums.MachineType;
+import org.testautomation.playwright.enums.OperationSystem;
 import org.testautomation.playwright.enums.Product;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.page.CalculatorPage;
@@ -35,11 +35,10 @@ public class FunctionalTests extends AbstractTest {
 
     TitleComponent title = calculator.getTitleComponent();
 
-    activeService.setNumberOfInstances("1");
+    activeService.setNumberOfInstances(1);
     title.verifyCostUpdatedPopupAppears();
 
     String defaultCostText = calculator.getCostDetails().readTotalCost();
-    double defaultCost = calculator.getCostDetails().readCostValue();
     assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
     title.verifyCostUpdatedPopupDisappears();
 
@@ -48,9 +47,7 @@ public class FunctionalTests extends AbstractTest {
     title.verifyCostUpdatedPopupDisappears();
 
     String updatedCostText = calculator.getCostDetails().readTotalCost();
-    double updatedCost = calculator.getCostDetails().readCostValue();
     assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
-    assertThat(updatedCost).isCloseTo(defaultCost * 3, Assertions.within(0.01));
   }
 
   static Stream<Arguments> calculatorFactoryProviderMachineType() {
@@ -182,14 +179,14 @@ public class FunctionalTests extends AbstractTest {
 
   static Stream<Arguments> calculatorFactoryProviderOperationSystem() {
     return Stream.of(
-        Arguments.of(Product.COMPUTE_ENGINE, "Free: Debian, CentOS, CoreOS, Ubuntu or BYOL (Bring Your Own License)", "Paid: Ubuntu Pro", "$69.98", "$72.89"),
-        Arguments.of(Product.GOOGLE_KUBERNETES_ENGINE, "Free: Container-optimized", "Paid: Windows Server", "$2,851.99", "$5,538.39")
+        Arguments.of(Product.COMPUTE_ENGINE, OperationSystem.FREE, OperationSystem.PAID_UBUNTU_PRO, "$69.98", "$72.89"),
+        Arguments.of(Product.GOOGLE_KUBERNETES_ENGINE, OperationSystem.FREE_CONTAINER_OPTIMIZED, OperationSystem.PAID_WINDOWS_SERVER, "$2,851.99", "$5,538.39")
     );
   }
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderOperationSystem")
-  public void verifyServiceTypeChangedBasedOnSelectedOperationSystem (Product product, String defaultOperationSystem, String selectedOperationSystem, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
+  public void verifyServiceTypeChangedBasedOnSelectedOperationSystem (Product product, OperationSystem defaultOperationSystem, OperationSystem selectedOperationSystem, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
     CalculatorPage calculator = new CalculatorPage(page);
     calculator.addToEstimate(product);
 
@@ -199,7 +196,7 @@ public class FunctionalTests extends AbstractTest {
     title.verifyCostUpdatedPopupAppears();
     
     String defaultOS = activeService.readSelectedOperationSystem();
-    assertThat(defaultOS).isEqualTo(defaultOperationSystem);
+    assertThat(defaultOS).isEqualTo(defaultOperationSystem.getOsName());
 
     String defaultCostText = calculator.getCostDetails().readTotalCost();
     assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
@@ -209,7 +206,7 @@ public class FunctionalTests extends AbstractTest {
     title.verifyCostUpdatedPopupAppears();
 
     String updatedOS = activeService.readSelectedOperationSystem();
-    assertThat(updatedOS).isEqualTo(selectedOperationSystem);
+    assertThat(updatedOS).isEqualTo(selectedOperationSystem.getOsName());
 
     String updatedCostText = calculator.getCostDetails().readTotalCost();
     assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);

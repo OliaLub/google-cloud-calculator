@@ -13,6 +13,7 @@ import org.testautomation.playwright.service.ServiceConfigurationBuilderFactory.
 @Builder
 public class SoleTenantNodesService implements Service {
 
+  private final ServiceType serviceType;
   private final Region region;
   private final int numberOfNodes;
   private final MachineType nodeType;
@@ -25,14 +26,16 @@ public class SoleTenantNodesService implements Service {
   }
 
   @Override
-  public void applyConfiguration(ServiceConfigurationComponent component) {
-   // to do
+  public void applyConfiguration(ServiceConfigurationComponent configuration) {
+    configuration.selectServiceType(serviceType)
+        .selectRegion(region)
+        .setNumberOfInstances(numberOfNodes);
   }
 
   public static class SoleTenantNodesServiceBuilder implements ServiceConfigurationBuilder<SoleTenantNodesService> {
     @Override
     public SoleTenantNodesService build() {
-      return new SoleTenantNodesService(region, numberOfNodes, nodeType, localSSD, committedUse);
+      return new SoleTenantNodesService(serviceType, region, numberOfNodes, nodeType, localSSD, committedUse);
     }
   }
 

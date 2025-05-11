@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.testautomation.playwright.enums.CommittedUse;
 import org.testautomation.playwright.enums.MachineType;
+import org.testautomation.playwright.enums.OperationSystem;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.enums.ServiceType;
 import org.testautomation.playwright.page.ServiceConfigurationComponent;
@@ -14,7 +15,7 @@ import org.testautomation.playwright.service.ServiceConfigurationBuilderFactory.
 public class InstancesService implements Service {
 
   private final int numberOfInstances;
-  private final String operatingSystem;
+  private final OperationSystem operatingSystem;
   private final MachineType machineType;
   private final String numberOfvCPUs;
   private final Region region;
@@ -26,11 +27,12 @@ public class InstancesService implements Service {
   }
 
   @Override
-  public void applyConfiguration(ServiceConfigurationComponent component) {
-    component.selectMachineConfiguration(machineType)
-    .selectRegion(region)
-        // other fields
-    .selectCommittedUseOption(committedUse);
+  public void applyConfiguration(ServiceConfigurationComponent configuration) {
+    configuration.setNumberOfInstances(numberOfInstances)
+        .selectOperationSystem(operatingSystem)
+        .selectMachineConfiguration(machineType)
+        .selectRegion(region)
+        .selectCommittedUseOption(committedUse);
   }
 
   public static class InstancesServiceBuilder implements ServiceConfigurationBuilder<InstancesService> {
