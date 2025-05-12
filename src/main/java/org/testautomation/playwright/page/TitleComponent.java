@@ -30,7 +30,7 @@ public class TitleComponent {
   }
 
   void waitForPriceToStabilize() {
-    WaiterUtility.waitForElementValueToStabilize(price, Duration.ofMillis(1500));
+    WaiterUtility.waitForElementValueToStabilize(price, Duration.ofMillis(1600));
   }
 
 }

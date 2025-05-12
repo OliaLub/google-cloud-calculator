@@ -4,13 +4,15 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Locator.FilterOptions;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
-import java.util.List;
 import lombok.Getter;
 import org.assertj.core.api.Assertions;
 import org.testautomation.playwright.elements.Combobox;
 import org.testautomation.playwright.enums.CommittedUse;
 import org.testautomation.playwright.enums.MachineType;
+import org.testautomation.playwright.enums.OperationSystem;
 import org.testautomation.playwright.enums.Region;
+import org.testautomation.playwright.enums.ServiceType;
+import org.testautomation.playwright.model.Service;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -27,6 +29,8 @@ public class ServiceConfigurationComponent {
   private final Combobox regionCombobox;
   private final Locator regionComboboxValue;
   private final CommittedUseComponent committedUseComponent;
+  private final Combobox serviceTypeCombobox;
+  private final Locator serviceTypeComboboxValue;
 
   public ServiceConfigurationComponent(Page page) {
     this.page = page;
@@ -39,16 +43,26 @@ public class ServiceConfigurationComponent {
     this.regionCombobox = new Combobox(page,"Region");
     this.regionComboboxValue = regionCombobox.getCombobox().locator("span").filter(new FilterOptions().setHasText("(")).first();
     this.committedUseComponent = new CommittedUseComponent(page);
+    this.serviceTypeCombobox = new Combobox(page, "Service Type");
+    this.serviceTypeComboboxValue = serviceTypeCombobox.getCombobox().locator("span").locator("span").last();
   }
 
-  public void enableAdvancedSettings() {
+  public ServiceConfigurationComponent selectServiceType(ServiceType serviceType) {
+    serviceTypeCombobox.selectOption(serviceType.getServiceName());
+    assertThat(serviceTypeComboboxValue).containsText(serviceType.getServiceName());
+    return this;
+  }
+
+  public ServiceConfigurationComponent enableAdvancedSettings() {
     advancedSettingsButton.click();
     assertThat(advancedSettingsButton).isChecked();
+    return this;
   }
 
-  public void setNumberOfInstances(String number) {
-    setNumberOfInstancesInput.fill(number);
-    Assertions.assertThat(setNumberOfInstancesInput.inputValue()).isEqualTo(number);
+  public ServiceConfigurationComponent setNumberOfInstances(int number) {
+    setNumberOfInstancesInput.fill(String.valueOf(number));
+    Assertions.assertThat(setNumberOfInstancesInput.inputValue()).isEqualTo(String.valueOf(number));
+    return this;
   }
 
   public void increaseInstances(int times) {
@@ -57,23 +71,13 @@ public class ServiceConfigurationComponent {
     }
   }
 
-  protected abstract List<Locator> getAdvancedSettingsOptions();
-
-  public void advancesSettingsOptionsAreVisible(){
-    getAdvancedSettingsOptions().forEach(locator -> assertThat(locator).isVisible());
-  }
-
-  public void advancesSettingsOptionsAreHidden(){
-    getAdvancedSettingsOptions().forEach(locator -> assertThat(locator).isHidden());
-  }
-
   public String readSelectedOperationSystem() {
     return operationSystemComboboxValue.innerText();
   }
 
-  public ServiceConfigurationComponent selectOperationSystem(String operationSystem) {
-    operationSystemCombobox.selectOption(operationSystem);
-    assertThat(operationSystemComboboxValue).containsText(operationSystem);
+  public ServiceConfigurationComponent selectOperationSystem(OperationSystem operationSystem) {
+    operationSystemCombobox.selectOption(operationSystem.getOsName());
+    assertThat(operationSystemComboboxValue).containsText(operationSystem.getOsName());
     return this;
   }
 
