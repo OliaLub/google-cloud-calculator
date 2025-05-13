@@ -5,13 +5,13 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import java.util.List;
 
-public class ComputeEngineServiceConfigurationComponent extends ServiceConfigurationComponent {
+public class InstancesServiceConfigurationComponent extends ServiceConfigurationComponent {
 
   private final Locator ephemeralPublicIPInstancesLabel;
   private final Locator staticPublicIPInstancesLabel;
   private final Locator enableConfidentialVmServiceSwitch;
 
-  public ComputeEngineServiceConfigurationComponent(Page page) {
+  public InstancesServiceConfigurationComponent(Page page) {
     super(page);
     this.ephemeralPublicIPInstancesLabel = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("tooltip")).locator("xpath=ancestor::*[4]/div[contains(., \"Instances using ephemeral public IP\")]");
     this.staticPublicIPInstancesLabel = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("tooltip")).locator("xpath=ancestor::*[4]/div[contains(., \"Instances using static public IP\")]");

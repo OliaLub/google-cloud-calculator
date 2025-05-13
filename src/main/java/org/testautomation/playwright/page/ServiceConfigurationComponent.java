@@ -4,6 +4,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Locator.FilterOptions;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import java.util.List;
 import lombok.Getter;
 import org.assertj.core.api.Assertions;
 import org.testautomation.playwright.elements.Combobox;
@@ -17,7 +18,7 @@ import org.testautomation.playwright.model.Service;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 @Getter
-public class ServiceConfigurationComponent {
+public abstract class ServiceConfigurationComponent {
 
   private final Page page;
   private final Locator advancedSettingsButton;
@@ -107,6 +108,16 @@ public class ServiceConfigurationComponent {
 
   public String readSelectedCommittedUseOption() {
     return committedUseComponent.getSelectedOption();
+  }
+
+  protected abstract List<Locator> getAdvancedSettingsOptions();
+
+  public void verifyAdvancesSettingsOptionsAreVisible(){
+    getAdvancedSettingsOptions().forEach(locator -> assertThat(locator).isVisible());
+  }
+
+  public void verifyAdvancesSettingsOptionsAreHidden(){
+    getAdvancedSettingsOptions().forEach(locator -> assertThat(locator).isHidden());
   }
 
   public void fillInCalculationForm(Service configuration) {

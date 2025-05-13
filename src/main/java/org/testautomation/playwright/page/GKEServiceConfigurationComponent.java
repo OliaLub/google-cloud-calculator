@@ -7,14 +7,14 @@ import com.microsoft.playwright.Page.GetByRoleOptions;
 import com.microsoft.playwright.options.AriaRole;
 import java.util.List;
 
-public class KubernetesEngineServiceConfigurationComponent extends ServiceConfigurationComponent {
+public class GKEServiceConfigurationComponent extends ServiceConfigurationComponent {
 
   private final Locator kubernetesEditionLabel;
   private final Locator addGPUsButton;
   private final Locator enableConfidentialGkeNodesSwitch;
   private final Locator addSustainedUseDiscountsSwitch;
 
-  public KubernetesEngineServiceConfigurationComponent(Page page) {
+  public GKEServiceConfigurationComponent(Page page) {
     super(page);
     this.kubernetesEditionLabel = page.getByText("Kubernetes Edition*").first();
     this.addGPUsButton = page.getByRole(AriaRole.SWITCH, new Page.GetByRoleOptions().setName("Add GPUs"));

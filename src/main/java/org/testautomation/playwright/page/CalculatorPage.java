@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 import org.testautomation.playwright.elements.AdvancedSettingsPopUp;
-import org.testautomation.playwright.enums.Product;
+import org.testautomation.playwright.enums.ServiceType;
 import org.testautomation.playwright.utils.WaiterUtility;
 
 @Getter
@@ -26,10 +26,10 @@ public class CalculatorPage {
     this.advancedSettingsPopUp = new AdvancedSettingsPopUp(page);
   }
 
-  public void addToEstimate(Product product){
-    ServiceConfigurationComponent serviceConfiguration = costDetails.openAddToEstimateModal(page).selectProduct(product, page);
-    page.waitForCondition(() -> titleComponent.getActiveService().textContent().equals(product.getProductName()));
-    serviceConfigurationMap.put(product.getProductName(), serviceConfiguration);
+  public void addToEstimate(ServiceType serviceType){
+    ServiceConfigurationComponent serviceConfiguration = costDetails.openAddToEstimateModal(page).selectProduct(serviceType, page);
+    page.waitForCondition(() -> titleComponent.getActiveService().textContent().equals(serviceType.getProduct().getProductName()));
+    serviceConfigurationMap.put(serviceType.getProduct().getProductName(), serviceConfiguration);
     activeService = serviceConfiguration;
   }
 
