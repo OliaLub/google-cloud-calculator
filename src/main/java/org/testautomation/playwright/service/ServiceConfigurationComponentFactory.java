@@ -3,10 +3,10 @@ package org.testautomation.playwright.service;
 import com.microsoft.playwright.Page;
 import lombok.experimental.UtilityClass;
 import org.testautomation.playwright.enums.ServiceType;
-import org.testautomation.playwright.page.InstancesServiceConfigurationComponent;
-import org.testautomation.playwright.page.GKEServiceConfigurationComponent;
+import org.testautomation.playwright.page.configuration.InstancesServiceConfigurationComponent;
+import org.testautomation.playwright.page.configuration.GKEServiceConfigurationComponent;
 import org.testautomation.playwright.page.ServiceConfigurationComponent;
-import org.testautomation.playwright.page.SoleTenantNodesServiceConfigurationComponent;
+import org.testautomation.playwright.page.configuration.SoleTenantNodesServiceConfigurationComponent;
 
 @UtilityClass
 public class ServiceConfigurationComponentFactory {

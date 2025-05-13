@@ -29,7 +29,7 @@ public class CalculatorPage {
   public void addToEstimate(ServiceType serviceType){
     ServiceConfigurationComponent serviceConfiguration = costDetails.openAddToEstimateModal(page).selectProduct(serviceType, page);
     page.waitForCondition(() -> titleComponent.getActiveService().textContent().equals(serviceType.getProduct().getProductName()));
-    serviceConfigurationMap.put(serviceType.getProduct().getProductName(), serviceConfiguration);
+    serviceConfigurationMap.put(serviceType.getServiceName(), serviceConfiguration);
     activeService = serviceConfiguration;
   }
 

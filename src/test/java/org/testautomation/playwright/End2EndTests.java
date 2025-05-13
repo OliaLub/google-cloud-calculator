@@ -28,7 +28,7 @@ public class End2EndTests extends AbstractTest {
     CalculatorPage calculator = new CalculatorPage(page);
     ServiceType serviceType = ServiceType.INSTANCES;
 
-    calculator.addToEstimate(serviceType.getProduct());
+    calculator.addToEstimate(serviceType);
     InstancesServiceBuilder builder = ServiceConfigurationBuilderFactory.getBuilder(serviceType);
 
     InstancesService service = builder.numberOfInstances(2)
@@ -51,7 +51,7 @@ public class End2EndTests extends AbstractTest {
     CalculatorPage calculator = new CalculatorPage(page);
     ServiceType serviceType = ServiceType.GKE;
 
-    calculator.addToEstimate(serviceType.getProduct());
+    calculator.addToEstimate(serviceType);
     GKEServiceBuilder builder = ServiceConfigurationBuilderFactory.getBuilder(serviceType);
 
     Service service = builder.numberOfNodes(5)
@@ -74,7 +74,7 @@ public class End2EndTests extends AbstractTest {
     CalculatorPage calculator = new CalculatorPage(page);
     ServiceType serviceType = ServiceType.GKE;
 
-    calculator.addToEstimate(serviceType.getProduct());
+    calculator.addToEstimate(serviceType);
     GKEServiceBuilder builder = ServiceConfigurationBuilderFactory.getBuilder(serviceType);
 
     Service service = builder.numberOfNodes(5)
@@ -93,7 +93,7 @@ public class End2EndTests extends AbstractTest {
 
     ServiceType secondServiceType = ServiceType.INSTANCES;
 
-    calculator.addToEstimate(secondServiceType.getProduct());
+    calculator.addToEstimate(secondServiceType);
     InstancesServiceBuilder secondBuilder = ServiceConfigurationBuilderFactory.getBuilder(secondServiceType);
 
     service = secondBuilder.numberOfInstances(1)
@@ -119,7 +119,7 @@ public class End2EndTests extends AbstractTest {
     CalculatorPage calculator = new CalculatorPage(page);
     ServiceType serviceType = ServiceType.INSTANCES;
 
-    calculator.addToEstimate(serviceType.getProduct());
+    calculator.addToEstimate(serviceType);
     InstancesServiceBuilder builder = ServiceConfigurationBuilderFactory.getBuilder(serviceType);
 
     Service service = builder.numberOfInstances(1)
@@ -136,7 +136,7 @@ public class End2EndTests extends AbstractTest {
     String firstEngineServiceCost = costDetails.readActiveServiceCost();
     assertThat(firstEngineServiceCost).isEqualTo("$431.58");
 
-    calculator.addToEstimate(serviceType.getProduct());
+    calculator.addToEstimate(serviceType);
     Service secondService = builder.numberOfInstances(1)
         .operatingSystem(OperationSystem.FREE)
         .machineType(MachineType.M2_MEGAMEM_416)
@@ -160,7 +160,7 @@ public class End2EndTests extends AbstractTest {
     CalculatorPage calculator = new CalculatorPage(page);
     ServiceType serviceType = ServiceType.SOLE_TENANT_NODES;
 
-    calculator.addToEstimate(serviceType.getProduct());
+    calculator.addToEstimate(serviceType);
 
     SoleTenantNodesServiceBuilder builder = ServiceConfigurationBuilderFactory.getBuilder(serviceType);
     SoleTenantNodesService service = builder.serviceType(serviceType)
