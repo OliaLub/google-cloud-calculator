@@ -5,6 +5,7 @@ import com.microsoft.playwright.Page;
 import java.util.regex.Pattern;
 import org.testautomation.playwright.enums.ServiceType;
 import org.testautomation.playwright.service.ServiceConfigurationComponentFactory;
+import org.testautomation.playwright.utils.WaiterUtility;
 
 public class AddToEstimateModal {
 
@@ -17,7 +18,7 @@ public class AddToEstimateModal {
   }
 
   public ServiceConfigurationComponent selectProduct(ServiceType serviceType, Page page) {
-    title.waitFor();
+    WaiterUtility.waitForElementToBeVisible(title);
     productTitle.filter(new Locator.FilterOptions().setHasText(Pattern.compile(serviceType.getProduct().getProductName() + "$"))).first().click();
     return ServiceConfigurationComponentFactory.createComponent(serviceType, page);
   }

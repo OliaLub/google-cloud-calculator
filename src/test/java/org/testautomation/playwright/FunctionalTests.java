@@ -2,7 +2,6 @@ package org.testautomation.playwright;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.microsoft.playwright.Page;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -13,7 +12,6 @@ import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.OperationSystem;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.enums.ServiceType;
-import org.testautomation.playwright.page.CalculatorPage;
 import org.testautomation.playwright.page.CostDetailsComponent;
 import org.testautomation.playwright.page.ServiceConfigurationComponent;
 import org.testautomation.playwright.page.TitleComponent;
@@ -27,8 +25,7 @@ public class FunctionalTests extends AbstractTest {
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderDefaultCost")
-  public void verifyComputeEnginePriceUpdatesBasedOnNumberOfInstances(ServiceType service, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
-    CalculatorPage calculator = new CalculatorPage(page);
+  public void verifyComputeEnginePriceUpdatesBasedOnNumberOfInstances(ServiceType service, String expectedDefaultCost, String expectedUpdatedCost) {
     calculator.addToEstimate(service);
 
     ServiceConfigurationComponent activeService = calculator.getActiveService();
@@ -58,8 +55,7 @@ public class FunctionalTests extends AbstractTest {
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderMachineType")
   public void verifyMachineTypeAndPriceUpdatedAccordingToSelection(ServiceType service, MachineType selectedType, String defaultMachineType, String defaultMachineFeatures, String selectedMachineFeatures,
-      String expectedDefaultCost, String expectedUpdatedCost, Page page) {
-    CalculatorPage calculator = new CalculatorPage(page);
+      String expectedDefaultCost, String expectedUpdatedCost) {
     calculator.addToEstimate(service);
 
     ServiceConfigurationComponent activeService = calculator.getActiveService();
@@ -91,8 +87,7 @@ public class FunctionalTests extends AbstractTest {
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderSelectedRegion")
-  public void verifyPriceUpdatedBasedOnSelectedRegion(ServiceType service, String expectedDefaultRegion, String expectedSelectedRegion, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
-    CalculatorPage calculator = new CalculatorPage(page);
+  public void verifyPriceUpdatedBasedOnSelectedRegion(ServiceType service, String expectedDefaultRegion, String expectedSelectedRegion, String expectedDefaultCost, String expectedUpdatedCost) {
     calculator.addToEstimate(service);
     ServiceConfigurationComponent activeService = calculator.getActiveService();
 
@@ -123,9 +118,7 @@ public class FunctionalTests extends AbstractTest {
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderCommittedUse")
-  public void verifyPriceUpdatedBasedOnCommittedUseDiscountOptions(ServiceType service, CommittedUse defaultTerm, CommittedUse selectedTerm, String expectedDefaultCost, String expectedUpdatedCost,
-      Page page) {
-    CalculatorPage calculator = new CalculatorPage(page);
+  public void verifyPriceUpdatedBasedOnCommittedUseDiscountOptions(ServiceType service, CommittedUse defaultTerm, CommittedUse selectedTerm, String expectedDefaultCost, String expectedUpdatedCost) {
     calculator.addToEstimate(service);
     ServiceConfigurationComponent activeService = calculator.getActiveService();
 
@@ -156,8 +149,7 @@ public class FunctionalTests extends AbstractTest {
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderCurrency")
-  public void verifyPriceUpdatedBasedOnSelectedCurrency(ServiceType service, Currency selectedCurrency, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
-    CalculatorPage calculator = new CalculatorPage(page);
+  public void verifyPriceUpdatedBasedOnSelectedCurrency(ServiceType service, Currency selectedCurrency, String expectedDefaultCost, String expectedUpdatedCost) {
     calculator.addToEstimate(service);
     CostDetailsComponent costDetails = calculator.getCostDetails();
 
@@ -185,8 +177,7 @@ public class FunctionalTests extends AbstractTest {
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderOperationSystem")
-  public void verifyServiceTypeChangedBasedOnSelectedOperationSystem (ServiceType service, OperationSystem defaultOperationSystem, OperationSystem selectedOperationSystem, String expectedDefaultCost, String expectedUpdatedCost, Page page) {
-    CalculatorPage calculator = new CalculatorPage(page);
+  public void verifyServiceTypeChangedBasedOnSelectedOperationSystem (ServiceType service, OperationSystem defaultOperationSystem, OperationSystem selectedOperationSystem, String expectedDefaultCost, String expectedUpdatedCost) {
     calculator.addToEstimate(service);
 
     ServiceConfigurationComponent activeService = calculator.getActiveService();
@@ -220,8 +211,7 @@ public class FunctionalTests extends AbstractTest {
 
     @ParameterizedTest
     @MethodSource("calculatorFactoryProviderAdvancedSettings")
-    public void verifyInstancesConfigurationsAppearAfterEnablingAdvancedSettings (ServiceType service, Page page) {
-      CalculatorPage calculator = new CalculatorPage(page);
+    public void verifyInstancesConfigurationsAppearAfterEnablingAdvancedSettings (ServiceType service) {
       calculator.addToEstimate(service);
 
       ServiceConfigurationComponent activeService = calculator.getActiveService();

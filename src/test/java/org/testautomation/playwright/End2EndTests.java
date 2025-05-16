@@ -2,7 +2,6 @@ package org.testautomation.playwright;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.Test;
 import org.testautomation.playwright.enums.CommittedUse;
 import org.testautomation.playwright.enums.MachineType;
@@ -15,7 +14,6 @@ import org.testautomation.playwright.model.InstancesService.InstancesServiceBuil
 import org.testautomation.playwright.model.Service;
 import org.testautomation.playwright.model.SoleTenantNodesService;
 import org.testautomation.playwright.model.SoleTenantNodesService.SoleTenantNodesServiceBuilder;
-import org.testautomation.playwright.page.CalculatorPage;
 import org.testautomation.playwright.page.CostDetailsComponent;
 import org.testautomation.playwright.page.ServiceConfigurationComponent;
 import org.testautomation.playwright.service.ServiceConfigurationBuilderFactory;
@@ -23,9 +21,8 @@ import org.testautomation.playwright.service.ServiceConfigurationBuilderFactory;
 public class End2EndTests extends AbstractTest {
 
   @Test
-  public void verifyComputeEngineConfigurationsSet(Page page) {
+  public void verifyComputeEngineConfigurationsSet() {
 
-    CalculatorPage calculator = new CalculatorPage(page);
     ServiceType serviceType = ServiceType.INSTANCES;
 
     calculator.addToEstimate(serviceType);
@@ -46,9 +43,8 @@ public class End2EndTests extends AbstractTest {
   }
 
   @Test
-  public void verifyKubernetesEngineConfigurationsSet(Page page) {
+  public void verifyKubernetesEngineConfigurationsSet() {
 
-    CalculatorPage calculator = new CalculatorPage(page);
     ServiceType serviceType = ServiceType.GKE;
 
     calculator.addToEstimate(serviceType);
@@ -69,9 +65,8 @@ public class End2EndTests extends AbstractTest {
   }
 
   @Test
-  public void verifyKubernetesEngineAndComputeEngineConfigurationsSet(Page page) {
+  public void verifyKubernetesEngineAndComputeEngineConfigurationsSet() {
 
-    CalculatorPage calculator = new CalculatorPage(page);
     ServiceType serviceType = ServiceType.GKE;
 
     calculator.addToEstimate(serviceType);
@@ -114,9 +109,8 @@ public class End2EndTests extends AbstractTest {
   }
 
   @Test
-  public void verifyTwoComputeEngineInstancesConfigurationsSet(Page page) {
+  public void verifyTwoComputeEngineInstancesConfigurationsSet() {
 
-    CalculatorPage calculator = new CalculatorPage(page);
     ServiceType serviceType = ServiceType.INSTANCES;
 
     calculator.addToEstimate(serviceType);
@@ -155,9 +149,8 @@ public class End2EndTests extends AbstractTest {
   }
 
   @Test
-  public void verifySoleTenantNodesConfigurationsSet(Page page) {
+  public void verifySoleTenantNodesConfigurationsSet() {
 
-    CalculatorPage calculator = new CalculatorPage(page);
     ServiceType serviceType = ServiceType.SOLE_TENANT_NODES;
 
     calculator.addToEstimate(serviceType);

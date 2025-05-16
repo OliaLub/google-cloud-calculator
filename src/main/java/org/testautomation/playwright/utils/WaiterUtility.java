@@ -5,8 +5,10 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Page.WaitForConditionOptions;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import java.time.Duration;
+import lombok.experimental.UtilityClass;
 import org.testautomation.playwright.elements.PopUp;
 
+@UtilityClass
 public class WaiterUtility {
 
   public static void waitUntilAppears(Locator element) {
@@ -26,6 +28,10 @@ public class WaiterUtility {
 
   public static void waitForTextToChange(Page page, Locator element, String initialText) {
     page.waitForCondition(() -> !element.innerText().equals(initialText), new WaitForConditionOptions().setTimeout(5000));
+  }
+
+  public static void waitForElementToBeVisible(Locator element) {
+    element.waitFor();
   }
 
   public static void waitForElementValueToStabilize(Locator element, Duration stableDuration) {
