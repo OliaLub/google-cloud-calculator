@@ -48,14 +48,14 @@ public class FunctionalTests extends AbstractTest {
   }
 
   static Stream<Arguments> calculatorFactoryProviderMachineType() {
-    return Stream.of(Arguments.of(ServiceType.INSTANCES, MachineType.M2_ULTRAMEM_208, "n4-standard-2", "vCPUs: 2, RAM: 8 GiB", "vCPUs: 208, RAM: 5888 GiB", "$69.98", "$30,742.51"),
-        Arguments.of(ServiceType.GKE, MachineType.M2_ULTRAMEM_208, "n1-standard-16", "vCPUs: 16, RAM: 60 GiB", "vCPUs: 208, RAM: 5888 GiB", "$2,851.99", "$153,786.57"));
+    return Stream.of(Arguments.of(ServiceType.INSTANCES, MachineType.M2_ULTRAMEM_208, "n4-standard-2", "vCPUs: 2, RAM: 8 GiB", "vCPUs: 208, RAM: 5888 GiB", "$30,742.51"),
+        Arguments.of(ServiceType.GKE, MachineType.M2_ULTRAMEM_208, "n1-standard-16", "vCPUs: 16, RAM: 60 GiB", "vCPUs: 208, RAM: 5888 GiB", "$153,786.57"));
   }
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderMachineType")
   public void verifyMachineTypeAndPriceUpdatedAccordingToSelection(ServiceType service, MachineType selectedType, String defaultMachineType, String defaultMachineFeatures, String selectedMachineFeatures,
-      String expectedDefaultCost, String expectedUpdatedCost) {
+      String expectedUpdatedCost) {
     calculator.addToEstimate(service);
 
     ServiceConfigurationComponent activeService = calculator.getActiveService();
@@ -64,7 +64,7 @@ public class FunctionalTests extends AbstractTest {
     title.verifyCostUpdatedPopupAppears();
 
     String defaultCostText = calculator.getCostDetails().readTotalCost();
-    assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+    assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
     title.verifyCostUpdatedPopupAppears();
 
     String defaultMachineTypeSummaryBlock = activeService.readMachineTypeSummaryBlockText();
@@ -81,13 +81,13 @@ public class FunctionalTests extends AbstractTest {
   }
 
   static Stream<Arguments> calculatorFactoryProviderSelectedRegion() {
-    return Stream.of(Arguments.of(ServiceType.INSTANCES, Region.IOWA.getRegionName(), Region.LONDON.getRegionName(), "$69.98", "$79.78"),
-        Arguments.of(ServiceType.GKE, Region.IOWA.getRegionName(), Region.LONDON.getRegionName(), "$2,851.99", "$3,652.93"));
+    return Stream.of(Arguments.of(ServiceType.INSTANCES, Region.IOWA.getRegionName(), Region.LONDON.getRegionName(), "$79.78"),
+        Arguments.of(ServiceType.GKE, Region.IOWA.getRegionName(), Region.LONDON.getRegionName(), "$3,652.93"));
   }
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderSelectedRegion")
-  public void verifyPriceUpdatedBasedOnSelectedRegion(ServiceType service, String expectedDefaultRegion, String expectedSelectedRegion, String expectedDefaultCost, String expectedUpdatedCost) {
+  public void verifyPriceUpdatedBasedOnSelectedRegion(ServiceType service, String expectedDefaultRegion, String expectedSelectedRegion, String expectedUpdatedCost) {
     calculator.addToEstimate(service);
     ServiceConfigurationComponent activeService = calculator.getActiveService();
 
@@ -95,7 +95,7 @@ public class FunctionalTests extends AbstractTest {
     title.verifyCostUpdatedPopupAppears();
 
     String defaultCostText = calculator.getCostDetails().readTotalCost();
-    assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+    assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
 
     String defaultRegion = activeService.readSelectedRegion();
     assertThat(defaultRegion).isEqualTo(expectedDefaultRegion);
@@ -112,13 +112,13 @@ public class FunctionalTests extends AbstractTest {
   }
 
   static Stream<Arguments> calculatorFactoryProviderCommittedUse() {
-    return Stream.of(Arguments.of(ServiceType.INSTANCES, CommittedUse.NONE, CommittedUse.THREE_YEARS, "$69.98", "$31.93"),
-        Arguments.of(ServiceType.GKE, CommittedUse.NONE, CommittedUse.THREE_YEARS, "$2,851.99", "$1,326.37"));
+    return Stream.of(Arguments.of(ServiceType.INSTANCES, CommittedUse.NONE, CommittedUse.THREE_YEARS, "$31.93"),
+        Arguments.of(ServiceType.GKE, CommittedUse.NONE, CommittedUse.THREE_YEARS, "$1,326.37"));
   }
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderCommittedUse")
-  public void verifyPriceUpdatedBasedOnCommittedUseDiscountOptions(ServiceType service, CommittedUse defaultTerm, CommittedUse selectedTerm, String expectedDefaultCost, String expectedUpdatedCost) {
+  public void verifyPriceUpdatedBasedOnCommittedUseDiscountOptions(ServiceType service, CommittedUse defaultTerm, CommittedUse selectedTerm, String expectedUpdatedCost) {
     calculator.addToEstimate(service);
     ServiceConfigurationComponent activeService = calculator.getActiveService();
 
@@ -126,7 +126,7 @@ public class FunctionalTests extends AbstractTest {
 
     title.verifyCostUpdatedPopupAppears();
     String defaultCostText = calculator.getCostDetails().readTotalCost();
-    assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+    assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
 
     String defaultCommittedUseOption = activeService.readSelectedCommittedUseOption();
     assertThat(defaultCommittedUseOption).isEqualTo(defaultTerm.getValue());
@@ -143,13 +143,13 @@ public class FunctionalTests extends AbstractTest {
   }
 
   static Stream<Arguments> calculatorFactoryProviderCurrency() {
-    return Stream.of(Arguments.of(ServiceType.INSTANCES, Currency.EUR, "$69.98", "€61.58"),
-        Arguments.of(ServiceType.GKE, Currency.EUR, "$2,851.99", "€2,509.46"));
+    return Stream.of(Arguments.of(ServiceType.INSTANCES, Currency.EUR, "€61.58"),
+        Arguments.of(ServiceType.GKE, Currency.EUR, "€2,509.46"));
   }
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderCurrency")
-  public void verifyPriceUpdatedBasedOnSelectedCurrency(ServiceType service, Currency selectedCurrency, String expectedDefaultCost, String expectedUpdatedCost) {
+  public void verifyPriceUpdatedBasedOnSelectedCurrency(ServiceType service, Currency selectedCurrency, String expectedUpdatedCost) {
     calculator.addToEstimate(service);
     CostDetailsComponent costDetails = calculator.getCostDetails();
 
@@ -158,7 +158,7 @@ public class FunctionalTests extends AbstractTest {
     assertThat(costDetails.readSelectedCurrency()).isEqualTo(Currency.USD);
 
     String defaultCostText = costDetails.readTotalCost();
-    assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+    assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
 
     costDetails.selectCurrency(selectedCurrency);
     assertThat(costDetails.readSelectedCurrency()).isEqualTo(selectedCurrency);
@@ -170,14 +170,14 @@ public class FunctionalTests extends AbstractTest {
 
   static Stream<Arguments> calculatorFactoryProviderOperationSystem() {
     return Stream.of(
-        Arguments.of(ServiceType.INSTANCES, OperationSystem.FREE, OperationSystem.PAID_UBUNTU_PRO, "$69.98", "$72.89"),
-        Arguments.of(ServiceType.GKE, OperationSystem.FREE_CONTAINER_OPTIMIZED, OperationSystem.PAID_WINDOWS_SERVER, "$2,851.99", "$5,538.39")
+        Arguments.of(ServiceType.INSTANCES, OperationSystem.FREE, OperationSystem.PAID_UBUNTU_PRO, "$72.89"),
+        Arguments.of(ServiceType.GKE, OperationSystem.FREE_CONTAINER_OPTIMIZED, OperationSystem.PAID_WINDOWS_SERVER, "$5,538.39")
     );
   }
 
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderOperationSystem")
-  public void verifyServiceTypeChangedBasedOnSelectedOperationSystem (ServiceType service, OperationSystem defaultOperationSystem, OperationSystem selectedOperationSystem, String expectedDefaultCost, String expectedUpdatedCost) {
+  public void verifyServiceTypeChangedBasedOnSelectedOperationSystem (ServiceType service, OperationSystem defaultOperationSystem, OperationSystem selectedOperationSystem, String expectedUpdatedCost) {
     calculator.addToEstimate(service);
 
     ServiceConfigurationComponent activeService = calculator.getActiveService();
@@ -189,7 +189,7 @@ public class FunctionalTests extends AbstractTest {
     assertThat(defaultOS).isEqualTo(defaultOperationSystem.getOsName());
 
     String defaultCostText = calculator.getCostDetails().readTotalCost();
-    assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
+    assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
     title.verifyCostUpdatedPopupDisappears();
 
     activeService.selectOperationSystem(selectedOperationSystem);
