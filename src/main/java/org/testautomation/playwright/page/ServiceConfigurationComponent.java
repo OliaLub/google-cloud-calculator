@@ -29,7 +29,8 @@ public abstract class ServiceConfigurationComponent {
   private final MachineTypeComponent machineTypeComponent;
   private final Combobox regionCombobox;
   private final Locator regionComboboxValue;
-  private final CommittedUseComponent committedUseComponent;
+  private final Combobox committedUseCombobox;
+  private final Locator committedUseComboboxValue;
   private final Combobox serviceTypeCombobox;
   private final Locator serviceTypeComboboxValue;
 
@@ -43,7 +44,8 @@ public abstract class ServiceConfigurationComponent {
     this.machineTypeComponent = new MachineTypeComponent(page);
     this.regionCombobox = new Combobox(page,"Region");
     this.regionComboboxValue = regionCombobox.getCombobox().locator("span").filter(new FilterOptions().setHasText("(")).first();
-    this.committedUseComponent = new CommittedUseComponent(page);
+    this.committedUseCombobox = new Combobox(page, "Committed use discount options");
+    this.committedUseComboboxValue = committedUseCombobox.getCombobox().locator("span").locator("span").last();
     this.serviceTypeCombobox = new Combobox(page, "Service Type");
     this.serviceTypeComboboxValue = serviceTypeCombobox.getCombobox().locator("span").locator("span").last();
   }
@@ -102,12 +104,13 @@ public abstract class ServiceConfigurationComponent {
   }
 
   public ServiceConfigurationComponent selectCommittedUseOption(CommittedUse term) {
-    committedUseComponent.selectOption(term);
+    committedUseCombobox.selectOption(term.getTerm());
+    assertThat(committedUseComboboxValue).containsText(term.getTerm());
     return this;
   }
 
   public String readSelectedCommittedUseOption() {
-    return committedUseComponent.getSelectedOption();
+    return committedUseComboboxValue.innerText();
   }
 
   protected abstract List<Locator> getAdvancedSettingsOptions();

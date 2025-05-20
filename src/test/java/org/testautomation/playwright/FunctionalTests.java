@@ -129,14 +129,14 @@ public class FunctionalTests extends AbstractTest {
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
 
     String defaultCommittedUseOption = activeService.readSelectedCommittedUseOption();
-    assertThat(defaultCommittedUseOption).isEqualTo(defaultTerm.getValue());
+    assertThat(defaultCommittedUseOption).isEqualTo(defaultTerm.getTerm());
     title.verifyCostUpdatedPopupDisappears();
 
     activeService.selectCommittedUseOption(selectedTerm);
     title.verifyCostUpdatedPopupAppears();
 
     String selectedCommittedUseOption = calculator.getActiveService().readSelectedCommittedUseOption();
-    assertThat(selectedCommittedUseOption).isEqualTo(selectedTerm.getValue());
+    assertThat(selectedCommittedUseOption).isEqualTo(selectedTerm.getTerm());
 
     String updatedCostText = calculator.getCostDetails().readTotalCost();
     assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
