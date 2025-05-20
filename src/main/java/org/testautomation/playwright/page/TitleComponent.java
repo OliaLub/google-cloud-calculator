@@ -21,12 +21,14 @@ public class TitleComponent {
     this.costUpdatedElement = page.getByText("Service cost updated");
   }
 
-  public void verifyCostUpdatedPopupAppears() {
+  public TitleComponent verifyCostUpdatedPopupAppears() {
     WaiterUtility.waitUntilAppears(costUpdatedElement);
+    return this;
   }
 
-  public void verifyCostUpdatedPopupDisappears() {
+  public TitleComponent verifyCostUpdatedPopupDisappears() {
     WaiterUtility.waitUntilDisappears(costUpdatedElement);
+    return this;
   }
 
   void waitForPriceToStabilize() {

@@ -12,9 +12,6 @@ import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.OperationSystem;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.enums.ServiceType;
-import org.testautomation.playwright.page.CostDetailsComponent;
-import org.testautomation.playwright.page.ServiceConfigurationComponent;
-import org.testautomation.playwright.page.TitleComponent;
 
 public class FunctionalTests extends AbstractTest {
 
@@ -26,24 +23,19 @@ public class FunctionalTests extends AbstractTest {
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderDefaultCost")
   public void verifyComputeEnginePriceUpdatesBasedOnNumberOfInstances(ServiceType service, String expectedDefaultCost, String expectedUpdatedCost) {
-    calculator.addToEstimate(service);
-
-    ServiceConfigurationComponent activeService = calculator.getActiveService();
-
-    TitleComponent title = calculator.getTitleComponent();
+    selectService(service);
 
     activeService.setNumberOfInstances(1);
     title.verifyCostUpdatedPopupAppears();
 
-    String defaultCostText = calculator.getCostDetails().readTotalCost();
+    String defaultCostText = costDetails.readTotalCost();
     assertThat(defaultCostText).isEqualTo(expectedDefaultCost);
     title.verifyCostUpdatedPopupDisappears();
 
     activeService.increaseInstances(2);
-    title.verifyCostUpdatedPopupAppears();
-    title.verifyCostUpdatedPopupDisappears();
+    title.verifyCostUpdatedPopupAppears().verifyCostUpdatedPopupDisappears();
 
-    String updatedCostText = calculator.getCostDetails().readTotalCost();
+    String updatedCostText = costDetails.readTotalCost();
     assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
   }
 
@@ -56,14 +48,11 @@ public class FunctionalTests extends AbstractTest {
   @MethodSource("calculatorFactoryProviderMachineType")
   public void verifyMachineTypeAndPriceUpdatedAccordingToSelection(ServiceType service, MachineType selectedType, String defaultMachineType, String defaultMachineFeatures, String selectedMachineFeatures,
       String expectedUpdatedCost) {
-    calculator.addToEstimate(service);
+    selectService(service);
 
-    ServiceConfigurationComponent activeService = calculator.getActiveService();
-
-    TitleComponent title = calculator.getTitleComponent();
     title.verifyCostUpdatedPopupAppears();
 
-    String defaultCostText = calculator.getCostDetails().readTotalCost();
+    String defaultCostText = costDetails.readTotalCost();
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
     title.verifyCostUpdatedPopupAppears();
 
@@ -73,7 +62,7 @@ public class FunctionalTests extends AbstractTest {
     activeService.selectMachineConfiguration(selectedType);
     title.verifyCostUpdatedPopupAppears();
 
-    String updatedCostText = calculator.getCostDetails().readTotalCost();
+    String updatedCostText = costDetails.readTotalCost();
     assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
 
     String updatedMachineTypeSummaryBlock = activeService.readMachineTypeSummaryBlockText();
@@ -88,13 +77,11 @@ public class FunctionalTests extends AbstractTest {
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderSelectedRegion")
   public void verifyPriceUpdatedBasedOnSelectedRegion(ServiceType service, String expectedDefaultRegion, String expectedSelectedRegion, String expectedUpdatedCost) {
-    calculator.addToEstimate(service);
-    ServiceConfigurationComponent activeService = calculator.getActiveService();
+    selectService(service);
 
-    TitleComponent title = calculator.getTitleComponent();
     title.verifyCostUpdatedPopupAppears();
 
-    String defaultCostText = calculator.getCostDetails().readTotalCost();
+    String defaultCostText = costDetails.readTotalCost();
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
 
     String defaultRegion = activeService.readSelectedRegion();
@@ -107,7 +94,7 @@ public class FunctionalTests extends AbstractTest {
     String selectedRegion = activeService.readSelectedRegion();
     assertThat(selectedRegion).isEqualTo(expectedSelectedRegion);
 
-    String updatedCostText = calculator.getCostDetails().readTotalCost();
+    String updatedCostText = costDetails.readTotalCost();
     assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
   }
 
@@ -119,13 +106,10 @@ public class FunctionalTests extends AbstractTest {
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderCommittedUse")
   public void verifyPriceUpdatedBasedOnCommittedUseDiscountOptions(ServiceType service, CommittedUse defaultTerm, CommittedUse selectedTerm, String expectedUpdatedCost) {
-    calculator.addToEstimate(service);
-    ServiceConfigurationComponent activeService = calculator.getActiveService();
-
-    TitleComponent title = calculator.getTitleComponent();
+    selectService(service);
 
     title.verifyCostUpdatedPopupAppears();
-    String defaultCostText = calculator.getCostDetails().readTotalCost();
+    String defaultCostText = costDetails.readTotalCost();
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
 
     String defaultCommittedUseOption = activeService.readSelectedCommittedUseOption();
@@ -135,10 +119,10 @@ public class FunctionalTests extends AbstractTest {
     activeService.selectCommittedUseOption(selectedTerm);
     title.verifyCostUpdatedPopupAppears();
 
-    String selectedCommittedUseOption = calculator.getActiveService().readSelectedCommittedUseOption();
+    String selectedCommittedUseOption = activeService.readSelectedCommittedUseOption();
     assertThat(selectedCommittedUseOption).isEqualTo(selectedTerm.getTerm());
 
-    String updatedCostText = calculator.getCostDetails().readTotalCost();
+    String updatedCostText = costDetails.readTotalCost();
     assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
   }
 
@@ -150,10 +134,8 @@ public class FunctionalTests extends AbstractTest {
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderCurrency")
   public void verifyPriceUpdatedBasedOnSelectedCurrency(ServiceType service, Currency selectedCurrency, String expectedUpdatedCost) {
-    calculator.addToEstimate(service);
-    CostDetailsComponent costDetails = calculator.getCostDetails();
+    selectService(service);
 
-    TitleComponent title = calculator.getTitleComponent();
     title.verifyCostUpdatedPopupAppears();
     assertThat(costDetails.readSelectedCurrency()).isEqualTo(Currency.USD);
 
@@ -178,17 +160,14 @@ public class FunctionalTests extends AbstractTest {
   @ParameterizedTest
   @MethodSource("calculatorFactoryProviderOperationSystem")
   public void verifyServiceTypeChangedBasedOnSelectedOperationSystem (ServiceType service, OperationSystem defaultOperationSystem, OperationSystem selectedOperationSystem, String expectedUpdatedCost) {
-    calculator.addToEstimate(service);
+    selectService(service);
 
-    ServiceConfigurationComponent activeService = calculator.getActiveService();
-
-    TitleComponent title = calculator.getTitleComponent();
     title.verifyCostUpdatedPopupAppears();
     
     String defaultOS = activeService.readSelectedOperationSystem();
     assertThat(defaultOS).isEqualTo(defaultOperationSystem.getOsName());
 
-    String defaultCostText = calculator.getCostDetails().readTotalCost();
+    String defaultCostText = costDetails.readTotalCost();
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
     title.verifyCostUpdatedPopupDisappears();
 
@@ -198,7 +177,7 @@ public class FunctionalTests extends AbstractTest {
     String updatedOS = activeService.readSelectedOperationSystem();
     assertThat(updatedOS).isEqualTo(selectedOperationSystem.getOsName());
 
-    String updatedCostText = calculator.getCostDetails().readTotalCost();
+    String updatedCostText = costDetails.readTotalCost();
     assertThat(updatedCostText).isEqualTo(expectedUpdatedCost);
   }
 
@@ -212,15 +191,10 @@ public class FunctionalTests extends AbstractTest {
     @ParameterizedTest
     @MethodSource("calculatorFactoryProviderAdvancedSettings")
     public void verifyInstancesConfigurationsAppearAfterEnablingAdvancedSettings (ServiceType service) {
-      calculator.addToEstimate(service);
+      selectService(service);
 
-      ServiceConfigurationComponent activeService = calculator.getActiveService();
-
-      TitleComponent title = calculator.getTitleComponent();
       title.verifyCostUpdatedPopupAppears();
-
-      activeService.verifyAdvancesSettingsOptionsAreHidden();
-      activeService.enableAdvancedSettings();
+      activeService.verifyAdvancesSettingsOptionsAreHidden().enableAdvancedSettings();
 
       calculator.verifyAdvancedSettingsPopupAppears();
       activeService.verifyAdvancesSettingsOptionsAreVisible();

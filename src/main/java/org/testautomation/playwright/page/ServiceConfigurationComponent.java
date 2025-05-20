@@ -115,12 +115,14 @@ public abstract class ServiceConfigurationComponent {
 
   protected abstract List<Locator> getAdvancedSettingsOptions();
 
-  public void verifyAdvancesSettingsOptionsAreVisible(){
+  public ServiceConfigurationComponent verifyAdvancesSettingsOptionsAreVisible(){
     getAdvancedSettingsOptions().forEach(locator -> assertThat(locator).isVisible());
+    return this;
   }
 
-  public void verifyAdvancesSettingsOptionsAreHidden(){
+  public ServiceConfigurationComponent verifyAdvancesSettingsOptionsAreHidden(){
     getAdvancedSettingsOptions().forEach(locator -> assertThat(locator).isHidden());
+    return this;
   }
 
   public void fillInCalculationForm(Service configuration) {

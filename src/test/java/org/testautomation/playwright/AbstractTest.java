@@ -13,6 +13,7 @@ import org.testautomation.playwright.model.Service;
 import org.testautomation.playwright.page.CalculatorPage;
 import org.testautomation.playwright.page.CostDetailsComponent;
 import org.testautomation.playwright.page.ServiceConfigurationComponent;
+import org.testautomation.playwright.page.TitleComponent;
 
 @UsePlaywright(AbstractTest.CustomOptions.class)
 public abstract class AbstractTest {
@@ -21,6 +22,7 @@ public abstract class AbstractTest {
   protected ServiceType serviceType;
   protected ServiceConfigurationComponent activeService;
   protected CostDetailsComponent costDetails;
+  protected TitleComponent title;
   protected Service service;
 
   public static class CustomOptions implements OptionsFactory {
@@ -40,6 +42,7 @@ public abstract class AbstractTest {
     page.navigate(URL);
     calculator = new CalculatorPage(page);
     costDetails = calculator.getCostDetails();
+    title = calculator.getTitleComponent();
   }
 
   protected void selectService(ServiceType serviceType) {
