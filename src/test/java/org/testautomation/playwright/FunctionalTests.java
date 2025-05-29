@@ -20,7 +20,7 @@ public class FunctionalTests extends AbstractTest {
          Arguments.of(ServiceType.GKE));
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "TC-1. Compute Engine price updates correctly based on number of instances: {arguments}")
   @MethodSource("calculatorServiceProvider")
   public void verifyComputeEnginePriceUpdatesBasedOnNumberOfInstances(ServiceType service) {
     calculator.addToEstimate(service);
@@ -36,7 +36,7 @@ public class FunctionalTests extends AbstractTest {
     assertThat(updatedCostText).isNotEqualTo(service.getDefaultCost());
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "TC-2. Instances configurations appear after enabling advanced  settings: {arguments}")
   @MethodSource("calculatorServiceProvider")
   public void verifyInstancesConfigurationsAppearAfterEnablingAdvancedSettings (ServiceType service) {
     calculator.addToEstimate(service);
@@ -53,7 +53,7 @@ public class FunctionalTests extends AbstractTest {
         Arguments.of(ServiceType.GKE, MachineType.M2_ULTRAMEM_208, "n1-standard-16", "vCPUs: 16, RAM: 60 GiB", "vCPUs: 208, RAM: 5888 GiB"));
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "TC-3. Machine type and price updates according to selection: {arguments}")
   @MethodSource("calculatorFactoryProviderMachineType")
   public void verifyMachineTypeAndPriceUpdatedAccordingToSelection(ServiceType service, MachineType selectedType, String defaultMachineType, String defaultMachineFeatures, String selectedMachineFeatures) {
     calculator.addToEstimate(service);
@@ -63,7 +63,7 @@ public class FunctionalTests extends AbstractTest {
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
     title.verifyCostUpdatedPopupAppears();
 
-    String defaultMachineTypeSummaryBlock = activeService.readMachineTypeSummaryBlockText();
+    String defaultMachineTypeSummaryBlock = calculator.getActiveService().readMachineTypeSummaryBlockText();
     assertThat(defaultMachineTypeSummaryBlock).contains(defaultMachineType, defaultMachineFeatures);
 
     calculator.getActiveService().selectMachineConfiguration(selectedType);
@@ -71,7 +71,7 @@ public class FunctionalTests extends AbstractTest {
     String updatedCostText = costDetails.readTotalCost();
     assertThat(updatedCostText).isNotEqualTo(service.getDefaultCost());
 
-    String updatedMachineTypeSummaryBlock = activeService.readMachineTypeSummaryBlockText();
+    String updatedMachineTypeSummaryBlock = calculator.getActiveService().readMachineTypeSummaryBlockText();
     assertThat(updatedMachineTypeSummaryBlock).contains(selectedType.getTypeName(), selectedMachineFeatures);
   }
 
@@ -80,7 +80,7 @@ public class FunctionalTests extends AbstractTest {
         Arguments.of(ServiceType.GKE, Region.IOWA.getRegionName(), Region.LONDON.getRegionName()));
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "TC-5. Price changes based on selected region: {arguments}")
   @MethodSource("calculatorFactoryProviderSelectedRegion")
   public void verifyPriceUpdatedBasedOnSelectedRegion(ServiceType service, String expectedDefaultRegion, String expectedSelectedRegion) {
     calculator.addToEstimate(service);
@@ -109,7 +109,7 @@ public class FunctionalTests extends AbstractTest {
         Arguments.of(ServiceType.GKE, CommittedUse.NONE, CommittedUse.THREE_YEARS));
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "TC-6. Price decreases based on selected discount: {arguments}")
   @MethodSource("calculatorFactoryProviderCommittedUse")
   public void verifyPriceUpdatedBasedOnCommittedUseDiscountOptions(ServiceType service, CommittedUse defaultTerm, CommittedUse selectedTerm) {
     calculator.addToEstimate(service);
@@ -135,7 +135,7 @@ public class FunctionalTests extends AbstractTest {
         Arguments.of(ServiceType.GKE, Currency.EUR, "€"));
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "TC-7. Price updates with correct currency conversion: {arguments}")
   @MethodSource("calculatorFactoryProviderCurrency")
   public void verifyPriceUpdatedBasedOnSelectedCurrency(ServiceType service, Currency selectedCurrency, String currencySymbol) {
     calculator.addToEstimate(service);
@@ -159,7 +159,7 @@ public class FunctionalTests extends AbstractTest {
     );
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "TC-8. Price changes based on selected operation system: {arguments}")
   @MethodSource("calculatorFactoryProviderOperationSystem")
   public void verifyServiceTypeChangedBasedOnSelectedOperationSystem (ServiceType service, OperationSystem defaultOperationSystem, OperationSystem selectedOperationSystem) {
     calculator.addToEstimate(service);
