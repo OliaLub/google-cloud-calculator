@@ -17,15 +17,19 @@ import org.testautomation.playwright.service.ServiceConfigurationBuilderFactory;
 public class End2EndCombinedTypesTests extends AbstractTest {
 
   ServiceType secondServiceType = ServiceType.INSTANCES;
-  private static InstancesServiceBuilder instancesBuilder;
-  private static GKEServiceBuilder kubernetesBuilder;
+  private InstancesServiceBuilder instancesBuilder;
+  private GKEServiceBuilder kubernetesBuilder;
+  private static final String EXPECTED_GKE_COST = "$29,983.99";
+  private static final String EXPECTED_ENGINE_COST = "$13,050.63";
+  private static final String EXPECTED_TOTAL_COST = "$43,034.61";
 
   @BeforeEach
   public void setUp(){
     serviceType = ServiceType.GKE;
     kubernetesBuilder = ServiceConfigurationBuilderFactory.getBuilder(serviceType);
     instancesBuilder = ServiceConfigurationBuilderFactory.getBuilder(secondServiceType);
-    selectService(serviceType);
+    calculator.addToEstimate(serviceType);
+    activeService = calculator.getActiveService();
   }
 
   @Test
@@ -41,7 +45,7 @@ public class End2EndCombinedTypesTests extends AbstractTest {
     activeService.fillInCalculationForm(service);
 
     String kubernetesServiceCost = costDetails.readActiveServiceCost();
-    assertThat(kubernetesServiceCost).isEqualTo("$29,983.99");
+    assertThat(kubernetesServiceCost).isEqualTo(EXPECTED_GKE_COST);
 
     calculator.addToEstimate(secondServiceType);
 
@@ -52,14 +56,13 @@ public class End2EndCombinedTypesTests extends AbstractTest {
         .committedUse(CommittedUse.ONE_YEAR)
         .build();
 
-    activeService = calculator.getActiveService();
-    activeService.fillInCalculationForm(service);
+    calculator.getActiveService().fillInCalculationForm(service);
 
     String engineServiceCost = costDetails.readActiveServiceCost();
-    assertThat(engineServiceCost).isEqualTo("$13,050.63");
+    assertThat(engineServiceCost).isEqualTo(EXPECTED_ENGINE_COST);
 
     String updatedCostText = calculator.getCostDetails().readTotalCost();
-    assertThat(updatedCostText).isEqualTo("$43,034.61");
+    assertThat(updatedCostText).isEqualTo(EXPECTED_TOTAL_COST);
   }
 
 }

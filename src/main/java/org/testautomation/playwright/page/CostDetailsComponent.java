@@ -45,10 +45,11 @@ public class CostDetailsComponent {
     return Double.parseDouble(readTotalCost().replace("$", "").replace(",", ""));
   }
 
-  public void selectCurrency(Currency currency) {
+  public CostDetailsComponent selectCurrency(Currency currency) {
     currencyButton.click();
     currencyList.getByRole(AriaRole.MENUITEMRADIO, new Locator.GetByRoleOptions().setName(currency.toString())).check();
     Assertions.assertThat(currencyButton.innerText()).contains(currency.toString());
+    return this;
   }
 
   public Currency readSelectedCurrency(){

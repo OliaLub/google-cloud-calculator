@@ -12,13 +12,15 @@ import org.testautomation.playwright.service.ServiceConfigurationBuilderFactory;
 
 public class End2EndSoleTenantNodesTypeTests extends AbstractTest {
 
-  private static SoleTenantNodesServiceBuilder builder;
+  private SoleTenantNodesServiceBuilder builder;
+  private static final String EXPECTED_COST = "$17,539.41";
 
   @BeforeEach
   public void setUp(){
     serviceType = ServiceType.SOLE_TENANT_NODES;
     builder = ServiceConfigurationBuilderFactory.getBuilder(serviceType);
-    selectService(serviceType);
+    calculator.addToEstimate(serviceType);
+    activeService = calculator.getActiveService();
   }
 
   @Test
@@ -32,7 +34,7 @@ public class End2EndSoleTenantNodesTypeTests extends AbstractTest {
     activeService.fillInCalculationForm(service);
 
     String updatedCostText = costDetails.readTotalCost();
-    assertThat(updatedCostText).isEqualTo("$17,539.41");
+    assertThat(updatedCostText).isEqualTo(EXPECTED_COST);
   }
 
 }

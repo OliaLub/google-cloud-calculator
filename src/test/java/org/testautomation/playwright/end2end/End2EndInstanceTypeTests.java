@@ -16,13 +16,18 @@ import org.testautomation.playwright.service.ServiceConfigurationBuilderFactory;
 
 public class End2EndInstanceTypeTests extends AbstractTest {
 
-  private static InstancesServiceBuilder builder;
+  private InstancesServiceBuilder builder;
+  private static final String EXPECTED_COST_FOR_TWO_IDENTICAL_ENGINES ="$97,048.22";
+  private static final String EXPECTED_FIRST_ENGINE_COST = "$431.58";
+  private static final String EXPECTED_SECOND_ENGINE_COST = "$15,985.21";
+  private static final String EXPECTED_TOTAL_COST = "$16,416.79";
 
   @BeforeEach
   public void setUp(){
     serviceType = ServiceType.INSTANCES;
     builder = ServiceConfigurationBuilderFactory.getBuilder(serviceType);
-    selectService(serviceType);
+    calculator.addToEstimate(serviceType);
+    activeService = calculator.getActiveService();
   }
 
   @Test
@@ -38,7 +43,7 @@ public class End2EndInstanceTypeTests extends AbstractTest {
     activeService.fillInCalculationForm(service);
 
     String updatedCostText = costDetails.readTotalCost();
-    assertThat(updatedCostText).isEqualTo("$97,048.22");
+    assertThat(updatedCostText).isEqualTo(EXPECTED_COST_FOR_TWO_IDENTICAL_ENGINES);
   }
 
   @Test
@@ -55,7 +60,7 @@ public class End2EndInstanceTypeTests extends AbstractTest {
 
 
     String firstEngineServiceCost = costDetails.readActiveServiceCost();
-    assertThat(firstEngineServiceCost).isEqualTo("$431.58");
+    assertThat(firstEngineServiceCost).isEqualTo(EXPECTED_FIRST_ENGINE_COST);
 
     calculator.addToEstimate(serviceType);
     Service secondService = builder.numberOfInstances(1)
@@ -65,14 +70,13 @@ public class End2EndInstanceTypeTests extends AbstractTest {
         .committedUse(CommittedUse.THREE_YEARS)
         .build();
 
-    activeService = calculator.getActiveService();
-    activeService.fillInCalculationForm(secondService);
+    calculator.getActiveService().fillInCalculationForm(secondService);
 
     String secondEngineServiceCost = costDetails.readActiveServiceCost();
-    assertThat(secondEngineServiceCost).isEqualTo("$15,985.21");
+    assertThat(secondEngineServiceCost).isEqualTo(EXPECTED_SECOND_ENGINE_COST);
 
     String updatedCostText = costDetails.readTotalCost();
-    assertThat(updatedCostText).isEqualTo("$16,416.79");
+    assertThat(updatedCostText).isEqualTo(EXPECTED_TOTAL_COST);
   }
 
 }

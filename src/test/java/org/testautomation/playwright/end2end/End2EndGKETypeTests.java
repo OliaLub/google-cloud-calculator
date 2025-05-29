@@ -16,12 +16,14 @@ import org.testautomation.playwright.service.ServiceConfigurationBuilderFactory;
 public class End2EndGKETypeTests extends AbstractTest {
 
   private GKEServiceBuilder builder;
+  private static final String EXPECTED_COST = "$3,153.18";
 
   @BeforeEach
   public void setUp(){
     serviceType = ServiceType.GKE;
     builder = ServiceConfigurationBuilderFactory.getBuilder(serviceType);
-    selectService(serviceType);
+    calculator.addToEstimate(serviceType);
+    activeService = calculator.getActiveService();
   }
 
   @Test
@@ -37,7 +39,7 @@ public class End2EndGKETypeTests extends AbstractTest {
     activeService.fillInCalculationForm(service);
 
     String updatedCostText = costDetails.readTotalCost();
-    assertThat(updatedCostText).isEqualTo("$3,153.18");
+    assertThat(updatedCostText).isEqualTo(EXPECTED_COST);
   }
 
 }

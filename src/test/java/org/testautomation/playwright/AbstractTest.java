@@ -45,9 +45,4 @@ public abstract class AbstractTest {
     title = calculator.getTitleComponent();
   }
 
-  protected void selectService(ServiceType serviceType) {
-    calculator.addToEstimate(serviceType);
-    activeService = calculator.getActiveService();
-  }
-
 }
