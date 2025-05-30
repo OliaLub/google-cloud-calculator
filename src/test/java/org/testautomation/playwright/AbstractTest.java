@@ -17,7 +17,6 @@ import org.testautomation.playwright.page.TitleComponent;
 
 @UsePlaywright(AbstractTest.CustomOptions.class)
 public abstract class AbstractTest {
-  private static final String URL = "https://cloud.google.com/products/calculator";
   protected CalculatorPage calculator;
   protected ServiceType serviceType;
   protected ServiceConfigurationComponent activeService;
@@ -39,10 +38,10 @@ public abstract class AbstractTest {
 
   @BeforeEach
   public void setUp(Page page) {
-    page.navigate(URL);
     calculator = new CalculatorPage(page);
     costDetails = calculator.getCostDetails();
     title = calculator.getTitleComponent();
+    calculator.openPage();
   }
 
 }

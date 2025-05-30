@@ -11,6 +11,7 @@ import org.testautomation.playwright.utils.WaiterUtility;
 @Getter
 public class CalculatorPage {
 
+  private static final String URL = "https://cloud.google.com/products/calculator";
   private final Page page;
   private final AdvancedSettingsPopUp advancedSettingsPopUp;
   private final TitleComponent titleComponent;
@@ -26,19 +27,27 @@ public class CalculatorPage {
     this.advancedSettingsPopUp = new AdvancedSettingsPopUp(page);
   }
 
-  public void addToEstimate(ServiceType serviceType){
+  public CalculatorPage openPage(){
+    page.navigate(URL);
+    return this;
+  }
+
+  public CalculatorPage addToEstimate(ServiceType serviceType){
     ServiceConfigurationComponent serviceConfiguration = costDetails.openAddToEstimateModal(page).selectProduct(serviceType, page);
     page.waitForCondition(() -> titleComponent.getActiveService().textContent().equals(serviceType.getProduct().getProductName()));
     serviceConfigurationMap.put(serviceType.getServiceName(), serviceConfiguration);
     activeService = serviceConfiguration;
+    return this;
   }
 
-  public void verifyAdvancedSettingsPopupAppears() {
+  public CalculatorPage verifyAdvancedSettingsPopupAppears() {
     WaiterUtility.waitUntilAppears(advancedSettingsPopUp);
+    return this;
   }
 
-  public void verifyAdvancedSettingsPopupDisappears() {
+  public CalculatorPage verifyAdvancedSettingsPopupDisappears() {
     WaiterUtility.waitUntilDisappears(advancedSettingsPopUp);
+    return this;
   }
 
 }

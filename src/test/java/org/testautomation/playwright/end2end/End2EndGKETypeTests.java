@@ -3,6 +3,7 @@ package org.testautomation.playwright.end2end;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testautomation.playwright.AbstractTest;
 import org.testautomation.playwright.enums.CommittedUse;
@@ -26,6 +27,7 @@ public class End2EndGKETypeTests extends AbstractTest {
     activeService = calculator.getActiveService();
   }
 
+  @DisplayName("Configure Google Kubernetes Engine")
   @Test
   public void verifyKubernetesEngineConfigurationsSet() {
 

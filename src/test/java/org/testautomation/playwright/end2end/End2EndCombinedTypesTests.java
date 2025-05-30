@@ -3,6 +3,7 @@ package org.testautomation.playwright.end2end;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testautomation.playwright.AbstractTest;
 import org.testautomation.playwright.enums.CommittedUse;
@@ -32,6 +33,7 @@ public class End2EndCombinedTypesTests extends AbstractTest {
     activeService = calculator.getActiveService();
   }
 
+  @DisplayName("TC-12. Final estimate includes both Compute Engine and Google Kubernetes Engine")
   @Test
   public void verifyKubernetesEngineAndComputeEngineConfigurationsSet() {
 

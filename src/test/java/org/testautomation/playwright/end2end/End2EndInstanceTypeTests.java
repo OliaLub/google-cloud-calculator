@@ -3,6 +3,7 @@ package org.testautomation.playwright.end2end;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testautomation.playwright.AbstractTest;
 import org.testautomation.playwright.enums.CommittedUse;
@@ -30,6 +31,7 @@ public class End2EndInstanceTypeTests extends AbstractTest {
     activeService = calculator.getActiveService();
   }
 
+  @DisplayName("Final estimate includes two identical instances of Compute Engine")
   @Test
   public void verifyComputeEngineConfigurationsSet() {
 
@@ -46,6 +48,7 @@ public class End2EndInstanceTypeTests extends AbstractTest {
     assertThat(updatedCostText).isEqualTo(EXPECTED_COST_FOR_TWO_IDENTICAL_ENGINES);
   }
 
+  @DisplayName("TC-11. Final estimate includes two distinct instances of Compute Engine")
   @Test
   public void verifyTwoComputeEngineInstancesConfigurationsSet() {
 
