@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testautomation.playwright.enums.CommittedUse;
 import org.testautomation.playwright.enums.Currency;
@@ -15,13 +16,8 @@ import org.testautomation.playwright.enums.ServiceType;
 
 public class FunctionalTests extends AbstractTest {
 
-  static Stream<Arguments> calculatorServiceProvider() {
-    return Stream.of(Arguments.of(ServiceType.INSTANCES),
-         Arguments.of(ServiceType.GKE));
-  }
-
   @ParameterizedTest(name = "TC-1. Compute Engine price updates correctly based on number of instances: {arguments}")
-  @MethodSource("calculatorServiceProvider")
+  @EnumSource(value = ServiceType.class, names = {"INSTANCES", "GKE"})
   public void verifyComputeEnginePriceUpdatesBasedOnNumberOfInstances(ServiceType service) {
     calculator.addToEstimate(service);
     title.verifyCostUpdatedPopupAppears();
@@ -37,7 +33,7 @@ public class FunctionalTests extends AbstractTest {
   }
 
   @ParameterizedTest(name = "TC-2. Instances configurations appear after enabling advanced  settings: {arguments}")
-  @MethodSource("calculatorServiceProvider")
+  @EnumSource(value = ServiceType.class, names = {"INSTANCES", "GKE"})
   public void verifyInstancesConfigurationsAppearAfterEnablingAdvancedSettings (ServiceType service) {
     calculator.addToEstimate(service);
     title.verifyCostUpdatedPopupAppears();
@@ -57,32 +53,33 @@ public class FunctionalTests extends AbstractTest {
   @MethodSource("calculatorFactoryProviderMachineType")
   public void verifyMachineTypeAndPriceUpdatedAccordingToSelection(ServiceType service, MachineType selectedType, String defaultMachineType, String defaultMachineFeatures, String selectedMachineFeatures) {
     calculator.addToEstimate(service);
+    activeService = calculator.getActiveService();
     title.verifyCostUpdatedPopupAppears();
 
     String defaultCostText = costDetails.readTotalCost();
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
     title.verifyCostUpdatedPopupAppears();
 
-    String defaultMachineTypeSummaryBlock = calculator.getActiveService().readMachineTypeSummaryBlockText();
+    String defaultMachineTypeSummaryBlock = activeService.readMachineTypeSummaryBlockText();
     assertThat(defaultMachineTypeSummaryBlock).contains(defaultMachineType, defaultMachineFeatures);
 
-    calculator.getActiveService().selectMachineConfiguration(selectedType);
+    activeService.selectMachineConfiguration(selectedType);
 
     String updatedCostText = costDetails.readTotalCost();
     assertThat(updatedCostText).isNotEqualTo(service.getDefaultCost());
 
-    String updatedMachineTypeSummaryBlock = calculator.getActiveService().readMachineTypeSummaryBlockText();
+    String updatedMachineTypeSummaryBlock = activeService.readMachineTypeSummaryBlockText();
     assertThat(updatedMachineTypeSummaryBlock).contains(selectedType.getTypeName(), selectedMachineFeatures);
   }
 
   static Stream<Arguments> calculatorFactoryProviderSelectedRegion() {
-    return Stream.of(Arguments.of(ServiceType.INSTANCES, Region.IOWA.getRegionName(), Region.LONDON.getRegionName()),
-        Arguments.of(ServiceType.GKE, Region.IOWA.getRegionName(), Region.LONDON.getRegionName()));
+    return Stream.of(Arguments.of(ServiceType.INSTANCES, Region.IOWA, Region.TOKYO),
+        Arguments.of(ServiceType.GKE, Region.IOWA, Region.LONDON));
   }
 
   @ParameterizedTest(name = "TC-5. Price changes based on selected region: {arguments}")
   @MethodSource("calculatorFactoryProviderSelectedRegion")
-  public void verifyPriceUpdatedBasedOnSelectedRegion(ServiceType service, String expectedDefaultRegion, String expectedSelectedRegion) {
+  public void verifyPriceUpdatedBasedOnSelectedRegion(ServiceType service, Region expectedDefaultRegion, Region expectedSelectedRegion) {
     calculator.addToEstimate(service);
     activeService = calculator.getActiveService();
     title.verifyCostUpdatedPopupAppears();
@@ -91,14 +88,14 @@ public class FunctionalTests extends AbstractTest {
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
 
     String defaultRegion = activeService.readSelectedRegion();
-    assertThat(defaultRegion).isEqualTo(expectedDefaultRegion);
+    assertThat(defaultRegion).isEqualTo(expectedDefaultRegion.getRegionName());
     title.verifyCostUpdatedPopupDisappears();
 
-    activeService.selectRegion(Region.LONDON);
+    activeService.selectRegion(expectedSelectedRegion);
     title.verifyCostUpdatedPopupAppears();
 
     String selectedRegion = activeService.readSelectedRegion();
-    assertThat(selectedRegion).isEqualTo(expectedSelectedRegion);
+    assertThat(selectedRegion).isEqualTo(expectedSelectedRegion.getRegionName());
 
     String updatedCostText = costDetails.readTotalCost();
     assertThat(updatedCostText).isNotEqualTo(service.getDefaultCost());
@@ -106,24 +103,25 @@ public class FunctionalTests extends AbstractTest {
 
   static Stream<Arguments> calculatorFactoryProviderCommittedUse() {
     return Stream.of(Arguments.of(ServiceType.INSTANCES, CommittedUse.NONE, CommittedUse.THREE_YEARS),
-        Arguments.of(ServiceType.GKE, CommittedUse.NONE, CommittedUse.THREE_YEARS));
+        Arguments.of(ServiceType.GKE, CommittedUse.NONE, CommittedUse.ONE_YEAR));
   }
 
   @ParameterizedTest(name = "TC-6. Price decreases based on selected discount: {arguments}")
   @MethodSource("calculatorFactoryProviderCommittedUse")
   public void verifyPriceUpdatedBasedOnCommittedUseDiscountOptions(ServiceType service, CommittedUse defaultTerm, CommittedUse selectedTerm) {
     calculator.addToEstimate(service);
+    activeService = calculator.getActiveService();
     title.verifyCostUpdatedPopupAppears();
     String defaultCostText = costDetails.readTotalCost();
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
 
-    String defaultCommittedUseOption = calculator.getActiveService().readSelectedCommittedUseOption();
+    String defaultCommittedUseOption = activeService.readSelectedCommittedUseOption();
     assertThat(defaultCommittedUseOption).isEqualTo(defaultTerm.getTerm());
     title.verifyCostUpdatedPopupDisappears();
 
-    calculator.getActiveService().selectCommittedUseOption(selectedTerm);
+    activeService.selectCommittedUseOption(selectedTerm);
 
-    String selectedCommittedUseOption = calculator.getActiveService().readSelectedCommittedUseOption();
+    String selectedCommittedUseOption = activeService.readSelectedCommittedUseOption();
     assertThat(selectedCommittedUseOption).isEqualTo(selectedTerm.getTerm());
 
     String updatedCostText = costDetails.readTotalCost();
@@ -131,13 +129,13 @@ public class FunctionalTests extends AbstractTest {
   }
 
   static Stream<Arguments> calculatorFactoryProviderCurrency() {
-    return Stream.of(Arguments.of(ServiceType.INSTANCES, Currency.EUR, "€"),
-        Arguments.of(ServiceType.GKE, Currency.EUR, "€"));
+    return Stream.of(Arguments.of(ServiceType.INSTANCES, Currency.EUR),
+        Arguments.of(ServiceType.GKE, Currency.GBP));
   }
 
   @ParameterizedTest(name = "TC-7. Price updates with correct currency conversion: {arguments}")
   @MethodSource("calculatorFactoryProviderCurrency")
-  public void verifyPriceUpdatedBasedOnSelectedCurrency(ServiceType service, Currency selectedCurrency, String currencySymbol) {
+  public void verifyPriceUpdatedBasedOnSelectedCurrency(ServiceType service, Currency selectedCurrency) {
     calculator.addToEstimate(service);
     title.verifyCostUpdatedPopupAppears();
     assertThat(costDetails.readSelectedCurrency()).isEqualTo(Currency.USD);
@@ -149,7 +147,7 @@ public class FunctionalTests extends AbstractTest {
     assertThat(costDetails.readSelectedCurrency()).isEqualTo(selectedCurrency);
 
     String updatedCostText = costDetails.readTotalCost();
-    assertThat(updatedCostText).contains(currencySymbol);
+    assertThat(updatedCostText).contains(selectedCurrency.getCurrencySymbol());
   }
 
   static Stream<Arguments> calculatorFactoryProviderOperationSystem() {
