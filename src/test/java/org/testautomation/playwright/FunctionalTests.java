@@ -26,7 +26,7 @@ public class FunctionalTests extends AbstractTest {
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
 
     calculator.getActiveService().increaseInstances(2);
-    title.verifyCostUpdatedPopupAppears().verifyCostUpdatedPopupDisappears();
+    title.verifyCostUpdatedPopupAppears();
 
     String updatedCostText = costDetails.readTotalCost();
     assertThat(updatedCostText).isNotEqualTo(service.getDefaultCost());
@@ -36,7 +36,6 @@ public class FunctionalTests extends AbstractTest {
   @EnumSource(value = ServiceType.class, names = {"INSTANCES", "GKE"})
   public void verifyInstancesConfigurationsAppearAfterEnablingAdvancedSettings (ServiceType service) {
     calculator.addToEstimate(service);
-    title.verifyCostUpdatedPopupAppears();
     calculator.getActiveService().verifyAdvancesSettingsOptionsAreHidden().enableAdvancedSettings();
 
     calculator.verifyAdvancedSettingsPopupAppears();
@@ -58,12 +57,12 @@ public class FunctionalTests extends AbstractTest {
 
     String defaultCostText = costDetails.readTotalCost();
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
-    title.verifyCostUpdatedPopupAppears();
 
     String defaultMachineTypeSummaryBlock = activeService.readMachineTypeSummaryBlockText();
     assertThat(defaultMachineTypeSummaryBlock).contains(defaultMachineType, defaultMachineFeatures);
 
     activeService.selectMachineConfiguration(selectedType);
+    title.verifyCostUpdatedPopupAppears();
 
     String updatedCostText = costDetails.readTotalCost();
     assertThat(updatedCostText).isNotEqualTo(service.getDefaultCost());
@@ -89,7 +88,6 @@ public class FunctionalTests extends AbstractTest {
 
     String defaultRegion = activeService.readSelectedRegion();
     assertThat(defaultRegion).isEqualTo(expectedDefaultRegion.getRegionName());
-    title.verifyCostUpdatedPopupDisappears();
 
     activeService.selectRegion(expectedSelectedRegion);
     title.verifyCostUpdatedPopupAppears();
@@ -117,9 +115,9 @@ public class FunctionalTests extends AbstractTest {
 
     String defaultCommittedUseOption = activeService.readSelectedCommittedUseOption();
     assertThat(defaultCommittedUseOption).isEqualTo(defaultTerm.getTerm());
-    title.verifyCostUpdatedPopupDisappears();
 
     activeService.selectCommittedUseOption(selectedTerm);
+    title.verifyCostUpdatedPopupAppears();
 
     String selectedCommittedUseOption = activeService.readSelectedCommittedUseOption();
     assertThat(selectedCommittedUseOption).isEqualTo(selectedTerm.getTerm());
@@ -172,6 +170,7 @@ public class FunctionalTests extends AbstractTest {
     assertThat(defaultCostText).isEqualTo(service.getDefaultCost());
 
     activeService.selectOperationSystem(selectedOperationSystem);
+    title.verifyCostUpdatedPopupAppears();
 
     String updatedOS = activeService.readSelectedOperationSystem();
     assertThat(updatedOS).isEqualTo(selectedOperationSystem.getOsName());

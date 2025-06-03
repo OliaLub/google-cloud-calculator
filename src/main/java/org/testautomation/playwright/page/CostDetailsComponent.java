@@ -12,6 +12,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class CostDetailsComponent {
 
+  private final Page page;
   private final Locator currencyButton;
   private final Locator currencyList;
   private final Locator addToEstimateButton;
@@ -19,6 +20,7 @@ public class CostDetailsComponent {
   private final Locator costLocator;
 
   public CostDetailsComponent(Page page) {
+    this.page = page;
     this.currencyButton = page.getByRole(AriaRole.BUTTON, new GetByRoleOptions().setName("Open currency selector"));
     this.currencyList = page.getByRole(AriaRole.GROUP);
     this.addToEstimateButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add to estimate")).last();
@@ -33,11 +35,13 @@ public class CostDetailsComponent {
 
   public String readTotalCost() {
     assertThat(costLocator).not().containsText("--");
+    new TitleComponent(page).waitForPriceToStabilize();
     return costLocator.textContent();
   }
 
   public String readActiveServiceCost() {
     assertThat(costLocator).not().containsText("--");
+    new TitleComponent(page).waitForPriceToStabilize();
     return activeServiceElement.locator("div", new Locator.LocatorOptions().setHasText(".")).first().textContent();
   }
 

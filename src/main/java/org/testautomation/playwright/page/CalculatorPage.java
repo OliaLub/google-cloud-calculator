@@ -9,24 +9,24 @@ import org.testautomation.playwright.enums.ServiceType;
 import org.testautomation.playwright.utils.WaiterUtility;
 
 @Getter
-public class CalculatorPage {
+public class CalculatorPage extends BasePage{
 
   private static final String URL = "https://cloud.google.com/products/calculator";
-  private final Page page;
   private final AdvancedSettingsPopUp advancedSettingsPopUp;
   private final TitleComponent titleComponent;
   private ServiceConfigurationComponent activeService;
-  private final Map <String, ServiceConfigurationComponent> serviceConfigurationMap;
+  private final Map <ServiceType, ServiceConfigurationComponent> serviceConfigurationMap;
   private final CostDetailsComponent costDetails;
 
   public CalculatorPage(Page page) {
-    this.page = page;
+    super(page);
     this.titleComponent = new TitleComponent(page);
     this.serviceConfigurationMap = new HashMap<>();
     this.costDetails = new CostDetailsComponent(page);
     this.advancedSettingsPopUp = new AdvancedSettingsPopUp(page);
   }
 
+  @Override
   public CalculatorPage openPage(){
     page.navigate(URL);
     return this;
@@ -34,8 +34,8 @@ public class CalculatorPage {
 
   public CalculatorPage addToEstimate(ServiceType serviceType){
     ServiceConfigurationComponent serviceConfiguration = costDetails.openAddToEstimateModal(page).selectProduct(serviceType, page);
-    page.waitForCondition(() -> titleComponent.getActiveService().textContent().equals(serviceType.getProduct().getProductName()));
-    serviceConfigurationMap.put(serviceType.getServiceName(), serviceConfiguration);
+    WaiterUtility.waitForText(page,titleComponent.getActiveService(),serviceType.getProduct().getProductName());
+    serviceConfigurationMap.put(serviceType, serviceConfiguration);
     activeService = serviceConfiguration;
     return this;
   }

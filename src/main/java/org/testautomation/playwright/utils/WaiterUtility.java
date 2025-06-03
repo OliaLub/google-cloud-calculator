@@ -26,6 +26,10 @@ public class WaiterUtility {
     element.getPopUp().waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.DETACHED));
   }
 
+  public static void waitForText(Page page, Locator locator, String expectedText) {
+    page.waitForCondition(() -> locator.textContent().equals(expectedText));
+  }
+
   public static void waitForTextToChange(Page page, Locator element, String initialText) {
     page.waitForCondition(() -> !element.innerText().equals(initialText), new WaitForConditionOptions().setTimeout(5000));
   }
