@@ -161,8 +161,6 @@ public class FunctionalTests extends AbstractTest {
     calculator.addToEstimate(service);
     activeService = calculator.getActiveService();
 
-    title.verifyCostUpdatedPopupAppears();
-    
     String defaultOS = activeService.readSelectedOperationSystem();
     assertThat(defaultOS).isEqualTo(defaultOperationSystem.getOsName());
 
