@@ -28,11 +28,13 @@ public class CalculatorPage extends BasePage{
 
   @Override
   public CalculatorPage openPage(){
+    logger.info("Opening calculator page: {}", URL);
     page.navigate(URL);
     return this;
   }
 
   public CalculatorPage addToEstimate(ServiceType serviceType){
+    logger.info("Adding service to estimate: {}", serviceType);
     ServiceConfigurationComponent serviceConfiguration = costDetails.openAddToEstimateModal(page).selectProduct(serviceType, page);
     WaiterUtility.waitForText(page,titleComponent.getActiveService(),serviceType.getProduct().getProductName());
     serviceConfigurationMap.put(serviceType, serviceConfiguration);
