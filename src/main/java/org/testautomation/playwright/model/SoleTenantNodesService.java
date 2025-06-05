@@ -2,6 +2,7 @@ package org.testautomation.playwright.model;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.testautomation.playwright.enums.CommittedUse;
 import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.Region;
@@ -11,6 +12,7 @@ import org.testautomation.playwright.service.ServiceConfigurationBuilderFactory.
 
 @Getter
 @Builder
+@ToString
 public class SoleTenantNodesService implements Service {
 
   private final ServiceType serviceType;

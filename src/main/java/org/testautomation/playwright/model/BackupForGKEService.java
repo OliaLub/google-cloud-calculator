@@ -2,6 +2,7 @@ package org.testautomation.playwright.model;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.enums.ServiceType;
 import org.testautomation.playwright.page.component.ServiceConfigurationComponent;
@@ -9,6 +10,7 @@ import org.testautomation.playwright.service.ServiceConfigurationBuilderFactory.
 
 @Getter
 @Builder
+@ToString
 public class BackupForGKEService implements Service {
 
   private final Region region;
