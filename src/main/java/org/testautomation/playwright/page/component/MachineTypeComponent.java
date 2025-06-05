@@ -1,4 +1,4 @@
-package org.testautomation.playwright.page;
+package org.testautomation.playwright.page.component;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -12,23 +12,23 @@ import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.utils.WaiterUtility;
 
 @Getter
-public class MachineTypeComponent {
+public class MachineTypeComponent extends BaseComponent {
 
-  private final Page page;
   private final Combobox machineFamilyCombobox;
   private final Combobox seriesCombobox;
   private final Combobox machineTypeCombobox;
   private final Locator machineTypeSummaryBlock;
 
-   MachineTypeComponent(Page page) {
-    this.page = page;
+  MachineTypeComponent(Page page) {
+    super(page);
     this.machineFamilyCombobox = new Combobox(page, "Machine Family");
     this.seriesCombobox = new Combobox(page, "Series");
     this.machineTypeCombobox = new Combobox(page, "Machine Type");
     this.machineTypeSummaryBlock = page.getByText("Based on your selection").locator("..");
-   }
+  }
 
   public void selectMachineConfiguration(MachineType type) {
+    logger.info("Selecting machine configuration: {}", type);
     selectMachineFamily(type.getFamily());
     selectSeries(type.getSeries());
     selectMachineType(type);

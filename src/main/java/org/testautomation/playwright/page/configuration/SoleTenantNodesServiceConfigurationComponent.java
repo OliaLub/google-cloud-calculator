@@ -4,7 +4,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import java.util.List;
-import org.testautomation.playwright.page.ServiceConfigurationComponent;
+import org.testautomation.playwright.page.component.ServiceConfigurationComponent;
 
 public class SoleTenantNodesServiceConfigurationComponent extends ServiceConfigurationComponent {
 

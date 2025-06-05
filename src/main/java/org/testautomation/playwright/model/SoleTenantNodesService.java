@@ -6,7 +6,7 @@ import org.testautomation.playwright.enums.CommittedUse;
 import org.testautomation.playwright.enums.MachineType;
 import org.testautomation.playwright.enums.Region;
 import org.testautomation.playwright.enums.ServiceType;
-import org.testautomation.playwright.page.ServiceConfigurationComponent;
+import org.testautomation.playwright.page.component.ServiceConfigurationComponent;
 import org.testautomation.playwright.service.ServiceConfigurationBuilderFactory.ServiceConfigurationBuilder;
 
 @Getter

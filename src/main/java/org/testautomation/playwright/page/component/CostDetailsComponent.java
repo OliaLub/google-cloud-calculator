@@ -1,4 +1,4 @@
-package org.testautomation.playwright.page;
+package org.testautomation.playwright.page.component;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -10,9 +10,8 @@ import org.testautomation.playwright.enums.Currency;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class CostDetailsComponent {
+public class CostDetailsComponent extends BaseComponent {
 
-  private final Page page;
   private final Locator currencyButton;
   private final Locator currencyList;
   private final Locator addToEstimateButton;
@@ -20,7 +19,7 @@ public class CostDetailsComponent {
   private final Locator costLocator;
 
   public CostDetailsComponent(Page page) {
-    this.page = page;
+    super(page);
     this.currencyButton = page.getByRole(AriaRole.BUTTON, new GetByRoleOptions().setName("Open currency selector"));
     this.currencyList = page.getByRole(AriaRole.GROUP);
     this.addToEstimateButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add to estimate")).last();
@@ -29,17 +28,20 @@ public class CostDetailsComponent {
   }
 
   public AddToEstimateModal openAddToEstimateModal(Page page){
+    logger.info("Opening Add To Estimate modal");
     addToEstimateButton.click();
     return new AddToEstimateModal(page);
   }
 
   public String readTotalCost() {
+    logger.debug("Reading total cost");
     assertThat(costLocator).not().containsText("--");
     new TitleComponent(page).waitForPriceToStabilize();
     return costLocator.textContent();
   }
 
   public String readActiveServiceCost() {
+    logger.debug("Reading active service cost");
     assertThat(costLocator).not().containsText("--");
     new TitleComponent(page).waitForPriceToStabilize();
     return activeServiceElement.locator("div", new Locator.LocatorOptions().setHasText(".")).first().textContent();
@@ -50,6 +52,7 @@ public class CostDetailsComponent {
   }
 
   public CostDetailsComponent selectCurrency(Currency currency) {
+    logger.info("Selecting currency");
     currencyButton.click();
     currencyList.getByRole(AriaRole.MENUITEMRADIO, new Locator.GetByRoleOptions().setName(currency.toString())).check();
     Assertions.assertThat(currencyButton.innerText()).contains(currency.toString());

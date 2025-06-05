@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 import org.testautomation.playwright.enums.ServiceType;
 import org.testautomation.playwright.page.configuration.InstancesServiceConfigurationComponent;
 import org.testautomation.playwright.page.configuration.GKEServiceConfigurationComponent;
-import org.testautomation.playwright.page.ServiceConfigurationComponent;
+import org.testautomation.playwright.page.component.ServiceConfigurationComponent;
 import org.testautomation.playwright.page.configuration.SoleTenantNodesServiceConfigurationComponent;
 
 @UtilityClass

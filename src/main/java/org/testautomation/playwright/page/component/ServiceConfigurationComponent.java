@@ -1,4 +1,4 @@
-package org.testautomation.playwright.page;
+package org.testautomation.playwright.page.component;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Locator.FilterOptions;
@@ -18,9 +18,8 @@ import org.testautomation.playwright.model.Service;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 @Getter
-public abstract class ServiceConfigurationComponent {
+public abstract class ServiceConfigurationComponent extends BaseComponent{
 
-  private final Page page;
   private final Locator advancedSettingsButton;
   private final Locator increaseInstancesButton;
   private final Locator setNumberOfInstancesInput;
@@ -35,7 +34,7 @@ public abstract class ServiceConfigurationComponent {
   private final Locator serviceTypeComboboxValue;
 
   public ServiceConfigurationComponent(Page page) {
-    this.page = page;
+    super(page);
     this.advancedSettingsButton = page.getByRole(AriaRole.SWITCH, new Page.GetByRoleOptions().setName("Advanced settings"));
     this.setNumberOfInstancesInput = page.getByRole(AriaRole.SPINBUTTON).first();
     this.increaseInstancesButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Increment")).first();
@@ -126,6 +125,7 @@ public abstract class ServiceConfigurationComponent {
   }
 
   public void fillInCalculationForm(Service configuration) {
+    logger.info("Filling in calculation form: {}", configuration);
     configuration.applyConfiguration(this);
     TitleComponent titleComponent = new TitleComponent(page);
     titleComponent.waitForPriceToStabilize();

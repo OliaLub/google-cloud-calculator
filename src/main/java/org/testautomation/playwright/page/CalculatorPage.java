@@ -6,6 +6,9 @@ import java.util.Map;
 import lombok.Getter;
 import org.testautomation.playwright.elements.AdvancedSettingsPopUp;
 import org.testautomation.playwright.enums.ServiceType;
+import org.testautomation.playwright.page.component.CostDetailsComponent;
+import org.testautomation.playwright.page.component.ServiceConfigurationComponent;
+import org.testautomation.playwright.page.component.TitleComponent;
 import org.testautomation.playwright.utils.WaiterUtility;
 
 @Getter

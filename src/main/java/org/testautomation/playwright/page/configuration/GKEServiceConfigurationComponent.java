@@ -1,12 +1,11 @@
 package org.testautomation.playwright.page.configuration;
 
-
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Page.GetByRoleOptions;
 import com.microsoft.playwright.options.AriaRole;
 import java.util.List;
-import org.testautomation.playwright.page.ServiceConfigurationComponent;
+import org.testautomation.playwright.page.component.ServiceConfigurationComponent;
 
 public class GKEServiceConfigurationComponent extends ServiceConfigurationComponent {
 

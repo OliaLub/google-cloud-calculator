@@ -1,4 +1,4 @@
-package org.testautomation.playwright.page;
+package org.testautomation.playwright.page.component;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -9,13 +9,14 @@ import lombok.Getter;
 import org.testautomation.playwright.utils.WaiterUtility;
 
 @Getter
-public class TitleComponent {
+public class TitleComponent extends BaseComponent{
 
   private final Locator activeService;
   private final Locator price;
   private final Locator costUpdatedElement;
 
   public TitleComponent(Page page) {
+    super(page);
     this.activeService = page.getByRole(AriaRole.HEADING, new GetByRoleOptions().setName("Selected product title"));
     this.price = page.getByText("/ month").locator("xpath=preceding-sibling::*[1]");
     this.costUpdatedElement = page.getByText("Service cost updated");

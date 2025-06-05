@@ -11,9 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.testautomation.playwright.enums.ServiceType;
 import org.testautomation.playwright.model.Service;
 import org.testautomation.playwright.page.CalculatorPage;
-import org.testautomation.playwright.page.CostDetailsComponent;
-import org.testautomation.playwright.page.ServiceConfigurationComponent;
-import org.testautomation.playwright.page.TitleComponent;
+import org.testautomation.playwright.page.component.CostDetailsComponent;
+import org.testautomation.playwright.page.component.ServiceConfigurationComponent;
+import org.testautomation.playwright.page.component.TitleComponent;
 
 @UsePlaywright(AbstractTest.CustomOptions.class)
 public abstract class AbstractTest {
