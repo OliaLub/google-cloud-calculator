@@ -27,34 +27,38 @@ public class MachineTypeComponent extends BaseComponent {
     this.machineTypeSummaryBlock = page.getByText("Based on your selection").locator("..");
   }
 
-  public void selectMachineConfiguration(MachineType type) {
+  public MachineTypeComponent selectMachineConfiguration(MachineType type) {
     logger.info("Selecting machine configuration: {}", type);
-    selectMachineFamily(type.getFamily());
-    selectSeries(type.getSeries());
-    selectMachineType(type);
+    selectMachineFamily(type.getFamily())
+        .selectSeries(type.getSeries())
+        .selectMachineType(type);
+    return this;
   }
 
   public String getMachineTypeSummaryBlockText() {
     return machineTypeSummaryBlock.innerText();
   }
 
-  private void selectMachineFamily(MachineFamily machineFamilyName) {
+  private MachineTypeComponent selectMachineFamily(MachineFamily machineFamilyName) {
     String summary = getMachineTypeSummaryBlockText();
     machineFamilyCombobox.selectOption(machineFamilyName.getFamilyName());
     machineFamilyCombobox.verifyOptionIsSelected(machineFamilyName.getFamilyName());
     WaiterUtility.waitForTextToChange(page, getMachineTypeSummaryBlock(), summary);
+    return this;
   }
 
-  private void selectSeries(MachineSeries seriesName) {
+  private MachineTypeComponent selectSeries(MachineSeries seriesName) {
     seriesCombobox.selectOption(seriesName.getSeriesName());
     seriesCombobox.verifyOptionIsSelected(seriesName.getSeriesName());
     assertThat(machineTypeSummaryBlock).containsText(seriesName.getSeriesName().toLowerCase());
+    return this;
   }
 
-  private void selectMachineType(MachineType machineTypeName) {
+  private MachineTypeComponent selectMachineType(MachineType machineTypeName) {
     machineTypeCombobox.selectOption(machineTypeName.getTypeName());
     machineTypeCombobox.verifyOptionIsSelected(machineTypeName.getTypeName());
     assertThat(machineTypeSummaryBlock).containsText(machineTypeName.getTypeName());
+    return this;
   }
 
 }

@@ -124,11 +124,12 @@ public abstract class ServiceConfigurationComponent extends BaseComponent{
     return this;
   }
 
-  public void fillInCalculationForm(Service configuration) {
+  public ServiceConfigurationComponent fillInCalculationForm(Service configuration) {
     logger.info("Filling in calculation form: {}", configuration);
     configuration.applyConfiguration(this);
     TitleComponent titleComponent = new TitleComponent(page);
     titleComponent.waitForPriceToStabilize();
+    return this;
   }
 
 }
