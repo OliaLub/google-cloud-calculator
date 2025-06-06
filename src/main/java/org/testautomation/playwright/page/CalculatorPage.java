@@ -4,7 +4,7 @@ import com.microsoft.playwright.Page;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
-import org.testautomation.playwright.elements.AdvancedSettingsPopUp;
+import org.testautomation.playwright.elements.PopUp;
 import org.testautomation.playwright.enums.ServiceType;
 import org.testautomation.playwright.page.component.CostDetailsComponent;
 import org.testautomation.playwright.page.component.ServiceConfigurationComponent;
@@ -15,7 +15,7 @@ import org.testautomation.playwright.utils.WaiterUtility;
 public class CalculatorPage extends BasePage{
 
   private static final String URL = "https://cloud.google.com/products/calculator";
-  private final AdvancedSettingsPopUp advancedSettingsPopUp;
+  private final PopUp advancedSettingsPopUp;
   private final TitleComponent titleComponent;
   private ServiceConfigurationComponent activeService;
   private final Map <ServiceType, ServiceConfigurationComponent> serviceConfigurationMap;
@@ -26,7 +26,7 @@ public class CalculatorPage extends BasePage{
     this.titleComponent = new TitleComponent(page);
     this.serviceConfigurationMap = new HashMap<>();
     this.costDetails = new CostDetailsComponent(page);
-    this.advancedSettingsPopUp = new AdvancedSettingsPopUp(page);
+    this.advancedSettingsPopUp = new PopUp(page, "Advanced settings turned on");
   }
 
   @Override

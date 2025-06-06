@@ -2,17 +2,15 @@ package org.testautomation.playwright.elements;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import lombok.Getter;
 
-public abstract class PopUp {
+@Getter
+public class PopUp {
 
-  protected Locator popUp;
+  private final Locator popUp;
 
-  protected PopUp(Page page, String popUpText) {
+  public PopUp(Page page, String popUpText) {
     this.popUp = page.getByText(popUpText);
-  }
-
-  public Locator getPopUp() {
-    return this.popUp;
   }
 
 }
